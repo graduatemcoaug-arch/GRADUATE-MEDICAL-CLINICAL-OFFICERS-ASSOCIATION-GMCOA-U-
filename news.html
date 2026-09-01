@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Centre | GMCOA-U</title>
+<meta name="description" content="Latest news from the Graduate Medical Clinical Officers Association of Uganda — association news, government updates, clinical updates, research, scholarships, and more.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Newsroom</div>
+    <h1>News Centre</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="news-filters">
+      <select id="category-filter">
+        <option value="">All Categories</option>
+        <option value="Association News">Association News</option>
+        <option value="Government Updates">Government Updates</option>
+        <option value="Clinical Updates">Clinical Updates</option>
+        <option value="Research News">Research News</option>
+        <option value="Scholarships">Scholarships</option>
+        <option value="International News">International News</option>
+        <option value="Partner News">Partner News</option>
+        <option value="Regional Activities">Regional Activities</option>
+        <option value="District Activities">District Activities</option>
+      </select>
+      <input type="search" id="news-search" placeholder="Search by keyword…">
+    </div>
+    <div class="news-count" id="news-count"></div>
+    <div class="card-grid" id="news-grid-full">
+      <p class="card-empty">Loading news…</p>
+    </div>
+    <div class="load-more-wrap">
+      <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);display:none;" id="load-more">Load More</button>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="about.html">About GMCOA</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html#downloads">Downloads</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="news.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
