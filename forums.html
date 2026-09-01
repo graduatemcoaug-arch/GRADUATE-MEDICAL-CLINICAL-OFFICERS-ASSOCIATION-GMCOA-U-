@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discussion Forums | GMCOA-U</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="cpd.html">CPD Academy</a>
+      <a href="dashboard.html">My Dashboard</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">GMCOA-U Virtual Academy</div>
+    <h1>Discussion Forums</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="news-filters">
+      <select id="category-filter"><option value="">All Categories</option></select>
+    </div>
+
+    <div class="finance-form-box" id="new-post-box" style="display:none;margin-bottom:26px;">
+      <h3>Start a Discussion</h3>
+      <form id="post-form">
+        <label>Category</label>
+        <select name="category_id" id="post-category" required></select>
+        <label>Your Display Name</label>
+        <input type="text" name="author_name" placeholder="How you'll appear on this post">
+        <label>Title</label>
+        <input type="text" name="title" required>
+        <label>Message</label>
+        <input type="text" name="body" required>
+        <button class="btn btn-primary" type="submit">Post</button>
+      </form>
+    </div>
+
+    <div id="posts-list"><p class="card-empty">Loading…</p></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="forums.js"></script>
+</body>
+</html>
