@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentorship Programme | GMCOA-U</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="cpd.html">CPD Academy</a>
+      <a href="dashboard.html">My Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">GMCOA-U Virtual Academy</div>
+    <h1>Mentorship Programme</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="finance-forms">
+      <div class="finance-form-box">
+        <h3>Become a Mentor</h3>
+        <form id="mentor-form">
+          <label>Full Name</label>
+          <input type="text" name="full_name" required>
+          <label>Areas of Expertise</label>
+          <input type="text" name="areas_of_expertise" placeholder="e.g. Community Health, Research">
+          <label>Bio</label>
+          <input type="text" name="bio">
+          <button class="btn btn-primary" type="submit">Register as Mentor</button>
+        </form>
+      </div>
+      <div class="finance-form-box">
+        <h3>Apply for a Mentor</h3>
+        <form id="mentee-form">
+          <label>Full Name</label>
+          <input type="text" name="full_name" required>
+          <label>Areas of Interest</label>
+          <input type="text" name="areas_of_interest">
+          <label>Your Goals</label>
+          <input type="text" name="goals">
+          <button class="btn btn-primary" type="submit">Apply</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">Available Mentors</div>
+      <h2>Our Mentors</h2>
+    </div>
+    <div id="mentors-list"><p class="card-empty">Loading…</p></div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="mentorship.js"></script>
+</body>
+</html>
