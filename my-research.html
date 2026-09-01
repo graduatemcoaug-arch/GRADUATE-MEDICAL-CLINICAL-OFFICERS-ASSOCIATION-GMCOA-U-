@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Research Projects | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="research.html">Research Centre</a>
+      <a href="portfolio.html">Portfolio</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" id="welcome-note">My Research</div>
+    <h1>My Research Projects</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="finance-form-box" style="margin-bottom:30px;">
+      <h3>Register a New Project</h3>
+      <form id="project-form">
+        <label>Project Title</label>
+        <input type="text" name="title" required>
+        <label>Principal Investigator</label>
+        <input type="text" name="principal_investigator" required>
+        <label>Co-Investigators <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+        <input type="text" name="co_investigators">
+        <label>Institution</label>
+        <input type="text" name="institution">
+        <label>Research Category</label>
+        <select name="category">
+          <option>Clinical Research</option>
+          <option>Community Health</option>
+          <option>Health Systems</option>
+          <option>Innovation & Digital Health</option>
+          <option>Public Health</option>
+          <option>Other</option>
+        </select>
+        <label>Study Design</label>
+        <input type="text" name="study_design" placeholder="e.g. Cross-sectional survey">
+        <label>Timeline Start</label>
+        <input type="date" name="timeline_start">
+        <label>Timeline End</label>
+        <input type="date" name="timeline_end">
+        <label>Funding Source</label>
+        <input type="text" name="funding_source">
+        <button class="btn btn-primary" type="submit">Register Project</button>
+      </form>
+    </div>
+
+    <div class="section-head">
+      <div class="section-eyebrow">From Proposal to Publication</div>
+      <h2>My Projects</h2>
+    </div>
+    <div id="projects-list">
+      <p class="card-empty">Loading…</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="my-research.js"></script>
+</body>
+</html>
