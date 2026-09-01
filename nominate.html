@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Nomination | GMCOA-U</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="elections.html">Elections</a>
+      <a href="dashboard.html">My Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" id="election-title">Loading…</div>
+    <h1>Submit Your Nomination</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <form id="nom-form">
+      <div class="apply-step">
+        <label for="nf-name">Full Name</label>
+        <input id="nf-name" name="full_name" type="text" required>
+
+        <label for="nf-photo">Passport Photograph</label>
+        <input id="nf-photo" name="photo" type="file" accept="image/*">
+
+        <label for="nf-bio">Biography</label>
+        <input id="nf-bio" name="biography" type="text" required placeholder="Brief professional biography">
+
+        <label for="nf-exp">Professional Experience</label>
+        <input id="nf-exp" name="professional_experience" type="text">
+
+        <label for="nf-manifesto">Manifesto</label>
+        <input id="nf-manifesto" name="manifesto" type="text" required placeholder="What you'll do in this position">
+      </div>
+      <button class="btn btn-primary" type="submit">Submit Nomination</button>
+    </form>
+    <p id="nom-status" style="margin-top:16px;font-size:0.9rem;"></p>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="nominate.js"></script>
+</body>
+</html>
