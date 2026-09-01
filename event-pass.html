@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Event Pass | GMCOA-U</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="events.html">Events</a>
+      <a href="membership.html">Membership</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Lost Your Pass?</div>
+    <h1>Retrieve My Event Pass</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="verify-box">
+      <form class="verify-form" id="pass-lookup-form">
+        <label class="sr-only" for="pl-regnum">Registration Number</label>
+        <input id="pl-regnum" name="registration_number" type="text" placeholder="e.g. EVT-2026-000123" required>
+        <label class="sr-only" for="pl-email">Email used at registration</label>
+        <input id="pl-email" name="email" type="email" placeholder="Email used at registration" required>
+        <button class="btn btn-primary" type="submit">Find My Pass</button>
+      </form>
+      <div class="verify-result" id="pass-lookup-result"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="about.html">About GMCOA</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="events.html">Events</a>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="research.html">Research</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="event-pass.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
