@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Election Committee | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U Elections
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="admin.html">Applications</a>
+      <a href="finance.html">Finance</a>
+      <a href="governance.html">Governance</a>
+      <a href="comms.html">Communications</a>
+      <a href="directory.html">Directory</a>
+      <a href="events-admin.html">Events</a>
+      <a href="agm-admin.html">AGM/EGM</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Election Committee</div>
+    <h1>Election Management</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="finance-form-box" style="margin-bottom:30px;">
+        <h3>Create a New Election</h3>
+        <form id="election-form">
+          <label>Election Cycle</label>
+          <input type="text" name="election_cycle" placeholder="e.g. 2026 General Election" required>
+          <label>Position Contested</label>
+          <input type="text" name="position_contested" placeholder="e.g. President" required>
+          <label>Election Type</label>
+          <select name="election_type">
+            <option>National</option>
+            <option>Regional</option>
+            <option>District</option>
+            <option>Committee</option>
+            <option>Special/By-Election</option>
+          </select>
+          <label>Nomination Opens</label>
+          <input type="date" name="nomination_open_date">
+          <label>Nomination Closes</label>
+          <input type="date" name="nomination_close_date">
+          <label>Voting Opens</label>
+          <input type="date" name="voting_open_date">
+          <label>Voting Closes</label>
+          <input type="date" name="voting_close_date">
+          <button class="btn btn-primary" type="submit">Create Election</button>
+        </form>
+      </div>
+
+      <div class="section-head">
+        <div class="section-eyebrow">Manage &amp; Review</div>
+        <h2>All Elections</h2>
+      </div>
+      <div id="elections-admin-list">
+        <p class="card-empty">Loading…</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="election-admin.js"></script>
+</body>
+</html>
