@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search the Constitution | GMCOA-U</title>
+<meta name="description" content="Search the GMCOA-U Constitution for answers on membership, elections, meetings, finance, and governance.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Governance, Made Findable</div>
+    <h1>Search the Constitution</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:22px;">
+      Search across the GMCOA-U Constitution for quick answers on membership, elections, meetings, finance, and governance. This is a keyword search over summarized provisions — not an AI chatbot — so results point you to the right Article for the exact wording.
+    </p>
+
+    <div class="verify-box">
+      <form class="verify-form" id="ask-form">
+        <label class="sr-only" for="ask-input">Search the Constitution</label>
+        <input id="ask-input" type="text" placeholder="e.g. quorum for AGM, who can vote, elections">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+      <p class="verify-hint">Try: <button class="sample-question" type="button">Who qualifies for membership?</button> · <button class="sample-question" type="button">What are the duties of the President?</button> · <button class="sample-question" type="button">How are elections conducted?</button></p>
+    </div>
+
+    <div id="ask-results" style="margin-top:26px;"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="about.html">About GMCOA</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="ask-constitution.html">Search Constitution</a>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="cpd.html">CPD Academy</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="constitution-data.js"></script>
+<script src="ask-constitution.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
