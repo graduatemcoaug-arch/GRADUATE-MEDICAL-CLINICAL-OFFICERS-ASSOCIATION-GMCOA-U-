@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Application Review | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U Admin
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="finance.html">Finance</a>
+      <a href="governance.html">Governance</a>
+      <a href="comms.html">Communications</a>
+      <a href="directory.html">Directory</a>
+      <a href="election-admin.html">Elections</a>
+      <a href="events-admin.html">Events</a>
+      <a href="agm-admin.html">AGM/EGM</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Membership Committee</div>
+    <h1>Application Review</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+      <div id="applications-list">
+        <p class="card-empty">Loading applications…</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
