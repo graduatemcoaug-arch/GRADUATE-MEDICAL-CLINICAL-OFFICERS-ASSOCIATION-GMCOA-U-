@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Centre | GMCOA-U</title>
+<meta name="description" content="GMCOA-U media resources — press releases, videos, photo galleries, conference highlights, podcast episodes, newsletters, brand assets, and media contacts.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Press &amp; Media Resources</div>
+    <h1>Media Centre</h1>
+  </div>
+</section>
+
+<nav class="subnav">
+  <div class="container">
+    <a href="#gallery">Media Gallery</a>
+    <a href="#downloads">Downloads</a>
+    <a href="#press-contacts">Media Contacts</a>
+  </div>
+</nav>
+
+<section class="section" id="gallery">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:22px;">
+      Press releases live in the <a href="news.html">News Centre</a>. Below is our archive of videos, photo galleries, conference highlights, podcast episodes, and newsletters.
+    </p>
+    <div class="media-tabs">
+      <button class="active" data-type="">All</button>
+      <button data-type="Video">Videos</button>
+      <button data-type="Photo Gallery">Photo Galleries</button>
+      <button data-type="Conference Highlight">Conference Highlights</button>
+      <button data-type="Podcast Episode">Podcasts</button>
+      <button data-type="Newsletter">Newsletters</button>
+    </div>
+    <div id="media-grid">
+      <p class="card-empty">Loading…</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft" id="downloads">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow">Brand &amp; Governance Assets</div>
+      <h2>Downloads</h2>
+    </div>
+    <div class="downloads-grid">
+      <div class="download-tile">
+        <div class="dl-icon">🏛️</div>
+        <div>
+          <div class="dl-name">GMCOA-U Constitution</div>
+          <div class="dl-meta">PDF · Adopted July 2025</div>
+        </div>
+        <a class="btn btn-primary" href="constitution.pdf">Download</a>
+      </div>
+      <div class="download-tile">
+        <div class="dl-icon">🖼️</div>
+        <div>
+          <div class="dl-name">Official Logo</div>
+          <div class="dl-meta">PNG · GMCOA-U crest</div>
+        </div>
+        <a class="btn btn-primary" href="logo.png" download>Download</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="press-contacts">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow">Get in Touch</div>
+      <h2>Media Contacts</h2>
+    </div>
+    <div class="contact-tile">
+      <div style="font-size:1.4rem;">📰</div>
+      <div>
+        <h4>Press &amp; Media Inquiries</h4>
+        <p>For interviews, press statements, or media collaboration requests, contact the GMCOA-U Publicity Office.</p>
+        <p style="margin-top:10px;">
+          <a href="mailto:graduate.mcoa.ug@gmail.com?subject=Media%20Inquiry">graduate.mcoa.ug@gmail.com</a><br>
+          <a href="tel:+256782024799">+256 782 024799</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="about.html">About GMCOA</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html">Media Centre</a>
+      <a href="#downloads">Downloads</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="media.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
