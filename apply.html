@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply for Membership | GMCOA-U</title>
+<meta name="description" content="Submit your online application to become a member of the Graduate Medical Clinical Officers Association of Uganda.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Join GMCOA-U</div>
+    <h1>Membership Application</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:26px;">
+      Complete the form below to apply. Your application goes to the Membership Committee for review, and you'll be notified in writing within 30 days, per Article 5 of the Constitution.
+    </p>
+
+    <form id="apply-form">
+
+      <div class="apply-step">
+        <h3><span class="step-num">1</span> Account &amp; Contact Details</h3>
+        <p class="step-note">How we'll reach you about your application.</p>
+        <div class="form-row two-col">
+          <div>
+            <label for="full_name">Full Name</label>
+            <input id="full_name" name="full_name" type="text" required>
+          </div>
+          <div>
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" required>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="mobile_number">Mobile Number</label>
+            <input id="mobile_number" name="mobile_number" type="tel" required>
+          </div>
+          <div>
+            <label for="preferred_communication">Preferred Communication</label>
+            <select id="preferred_communication" name="preferred_communication">
+              <option value="Email">Email</option>
+              <option value="SMS">SMS</option>
+              <option value="Phone Call">Phone Call</option>
+              <option value="WhatsApp">WhatsApp</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-step">
+        <h3><span class="step-num">2</span> Personal Information</h3>
+        <p class="step-note">All optional except where marked, but helps the Committee process your application faster.</p>
+        <div class="form-row two-col">
+          <div>
+            <label for="date_of_birth">Date of Birth</label>
+            <input id="date_of_birth" name="date_of_birth" type="date">
+          </div>
+          <div>
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender">
+              <option value="">Prefer not to say</option>
+              <option>Female</option>
+              <option>Male</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="nationality">Nationality</label>
+            <input id="nationality" name="nationality" type="text">
+          </div>
+          <div>
+            <label for="region">Region</label>
+            <input id="region" name="region" type="text" placeholder="e.g. Teso">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="district_of_origin">District of Origin</label>
+            <input id="district_of_origin" name="district_of_origin" type="text">
+          </div>
+          <div>
+            <label for="district_of_residence">District of Residence</label>
+            <input id="district_of_residence" name="district_of_residence" type="text">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="postal_address">Postal Address</label>
+            <input id="postal_address" name="postal_address" type="text">
+          </div>
+          <div>
+            <label for="physical_address">Physical Address</label>
+            <input id="physical_address" name="physical_address" type="text">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="emergency_contact_name">Emergency Contact Name</label>
+            <input id="emergency_contact_name" name="emergency_contact_name" type="text">
+          </div>
+          <div>
+            <label for="emergency_contact_phone">Emergency Contact Phone</label>
+            <input id="emergency_contact_phone" name="emergency_contact_phone" type="tel">
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-step">
+        <h3><span class="step-num">3</span> Professional Information</h3>
+        <div class="form-row two-col">
+          <div>
+            <label for="membership_category">Membership Category</label>
+            <select id="membership_category" name="membership_category" required>
+              <option value="Ordinary (Full) Member">Ordinary (Full) Member</option>
+              <option value="Associate Member">Associate Member</option>
+              <option value="Corporate Member">Corporate Member</option>
+            </select>
+          </div>
+          <div>
+            <label for="qualification">Professional Qualification</label>
+            <input id="qualification" name="qualification" type="text" placeholder="e.g. BCMCH">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="institution_attended">Institution Attended</label>
+            <input id="institution_attended" name="institution_attended" type="text">
+          </div>
+          <div>
+            <label for="year_of_graduation">Graduation Year</label>
+            <input id="year_of_graduation" name="year_of_graduation" type="text">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="registration_number">Registration Number</label>
+            <input id="registration_number" name="registration_number" type="text">
+          </div>
+          <div>
+            <label for="practising_licence_number">Practising Licence Number <span style="font-weight:400;color:var(--text-muted);">(if applicable)</span></label>
+            <input id="practising_licence_number" name="practising_licence_number" type="text">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="employer">Employer</label>
+            <input id="employer" name="employer" type="text">
+          </div>
+          <div>
+            <label for="facility_level">Facility Level</label>
+            <input id="facility_level" name="facility_level" type="text" placeholder="e.g. Regional Referral Hospital">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="employment_sector">Employment Sector</label>
+            <select id="employment_sector" name="employment_sector">
+              <option value="">Select…</option>
+              <option>Government</option>
+              <option>Private</option>
+              <option>NGO</option>
+              <option>Academic</option>
+              <option>Self-employed</option>
+            </select>
+          </div>
+          <div>
+            <label for="current_position">Current Position</label>
+            <input id="current_position" name="current_position" type="text">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="years_of_experience">Years of Experience</label>
+            <input id="years_of_experience" name="years_of_experience" type="text">
+          </div>
+          <div>
+            <label for="areas_of_clinical_interest">Areas of Clinical Interest</label>
+            <input id="areas_of_clinical_interest" name="areas_of_clinical_interest" type="text">
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-step">
+        <h3><span class="step-num">4</span> Document Upload</h3>
+        <p class="step-note">All optional except Passport Photograph. Accepted: JPG, PNG, PDF — max 5MB each.</p>
+        <div class="form-row two-col">
+          <div>
+            <label for="passport_photo">Passport Photograph</label>
+            <input id="passport_photo" name="passport_photo" type="file" accept="image/*,.pdf" required>
+          </div>
+          <div>
+            <label for="national_id">National ID</label>
+            <input id="national_id" name="national_id" type="file" accept="image/*,.pdf">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="academic_certificates">Academic Certificates</label>
+            <input id="academic_certificates" name="academic_certificates" type="file" accept="image/*,.pdf">
+          </div>
+          <div>
+            <label for="degree_transcript">Degree Transcript</label>
+            <input id="degree_transcript" name="degree_transcript" type="file" accept="image/*,.pdf">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div>
+            <label for="registration_certificate">Professional Registration Certificate</label>
+            <input id="registration_certificate" name="registration_certificate" type="file" accept="image/*,.pdf">
+          </div>
+          <div>
+            <label for="practising_licence">Practising Licence <span style="font-weight:400;color:var(--text-muted);">(if applicable)</span></label>
+            <input id="practising_licence" name="practising_licence" type="file" accept="image/*,.pdf">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label for="cv">Curriculum Vitae <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+            <input id="cv" name="cv" type="file" accept="image/*,.pdf">
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-step">
+        <h3><span class="step-num">5</span> Declaration</h3>
+        <div class="declaration-item">
+          <input type="checkbox" id="declaration_accurate" name="declaration_accurate" required>
+          <label for="declaration_accurate">I confirm that the information provided in this application is accurate to the best of my knowledge.</label>
+        </div>
+        <div class="declaration-item">
+          <input type="checkbox" id="declaration_agree_constitution" name="declaration_agree_constitution" required>
+          <label for="declaration_agree_constitution">I agree to abide by the GMCOA-U Constitution and Code of Conduct.</label>
+        </div>
+        <div class="declaration-item">
+          <input type="checkbox" id="declaration_consent_data" name="declaration_consent_data" required>
+          <label for="declaration_consent_data">I consent to the processing of my personal data in accordance with applicable data protection laws.</label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit">Submit Application</button>
+      <p id="apply-form-note" style="margin-top:14px;font-size:0.9rem;"></p>
+    </form>
+
+    <div class="tracking-box" id="tracking-result" style="display:none;">
+      <div class="tn-label">Application Submitted</div>
+      <div class="tn-number" id="tracking-number-display"></div>
+      <p>Save this tracking number — you'll need it to check your application status. The Membership Committee will review your application and you'll be notified within 30 days, per the Constitution.</p>
+      <p style="margin-top:16px;"><a class="btn btn-primary" href="check-status.html">Check Application Status</a></p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="about.html">About GMCOA</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html">Media Centre</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="apply.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
