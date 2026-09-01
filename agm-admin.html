@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGM &amp; General Meetings Admin | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="election-admin.html">Elections</a>
+      <a href="governance.html">Governance</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Secretariat</div>
+    <h1>AGM &amp; General Meetings</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="finance-form-box" style="margin-bottom:22px;">
+        <h3>Create a Meeting</h3>
+        <form id="meeting-form">
+          <label>Meeting Type</label>
+          <select name="meeting_type" required><option>AGM</option><option>EGM</option></select>
+          <label>Title</label>
+          <input type="text" name="title" placeholder="e.g. 2026 Annual General Meeting" required>
+          <label>Meeting Date</label>
+          <input type="date" name="meeting_date">
+          <label>Agenda Document Link</label>
+          <input type="url" name="agenda_document_link">
+          <label>Virtual Meeting Platform</label>
+          <select name="virtual_meeting_platform"><option>Zoom</option><option>Google Meet</option><option>Microsoft Teams</option><option>Other</option></select>
+          <label>Virtual Meeting Link</label>
+          <input type="url" name="virtual_meeting_link">
+          <button class="btn btn-primary" type="submit">Create Meeting</button>
+        </form>
+      </div>
+
+      <div class="finance-form-box" style="margin-bottom:26px;">
+        <h3>Record a Resolution</h3>
+        <form id="resolution-form">
+          <label>Meeting</label>
+          <select name="meeting_id" id="resolution-meeting-select" required></select>
+          <label>Resolution Text</label>
+          <input type="text" name="resolution_text" required>
+          <label>Vote Result</label>
+          <input type="text" name="vote_result" placeholder="e.g. Passed 45-3">
+          <button class="btn btn-primary" type="submit">Record Resolution</button>
+        </form>
+      </div>
+
+      <div class="section-head">
+        <div class="section-eyebrow">Manage</div>
+        <h2>All Meetings</h2>
+      </div>
+      <div id="meetings-admin-list"><p class="card-empty">Loading…</p></div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="agm-admin.js"></script>
+</body>
+</html>
