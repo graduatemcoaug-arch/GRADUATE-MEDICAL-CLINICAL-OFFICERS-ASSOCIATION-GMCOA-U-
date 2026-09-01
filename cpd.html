@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPD Academy | GMCOA-U</title>
+<meta name="description" content="Browse accredited CPD courses, webinars, and professional development opportunities from the GMCOA-U Virtual Academy.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">GMCOA-U Virtual Academy</div>
+    <h1>CPD Academy</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:26px;">
+      Accredited CPD courses, webinars, and professional development for Graduate Medical Clinical Officers — accessible from anywhere. GMCOA-U is an AHPC-accredited CPD provider.
+    </p>
+
+    <div class="news-filters">
+      <select id="cpd-category-filter">
+        <option value="">All Categories</option>
+        <option value="Clinical Medicine">Clinical Medicine</option>
+        <option value="Community Health">Community Health</option>
+        <option value="Professional Practice">Professional Practice</option>
+        <option value="Research & Innovation">Research &amp; Innovation</option>
+        <option value="Digital Health">Digital Health</option>
+      </select>
+    </div>
+
+    <div id="courses-list">
+      <p class="card-empty">Loading courses…</p>
+    </div>
+  </div>
+</section>
+
+<div class="enroll-modal-bg" id="enroll-modal-bg">
+  <div class="enroll-modal">
+    <h3>Enroll: <span id="enroll-course-title"></span></h3>
+    <form id="enroll-form">
+      <label for="ef-name">Full Name</label>
+      <input id="ef-name" name="full_name" type="text" required>
+      <label for="ef-email">Email</label>
+      <input id="ef-email" name="email" type="email" required>
+      <label for="ef-phone">Phone <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+      <input id="ef-phone" name="phone" type="tel">
+      <p id="enroll-note" style="font-size:0.85rem;margin-top:10px;"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="submit">Confirm Enrollment</button>
+        <button class="btn btn-outline" type="button" id="enroll-cancel" style="color:var(--deep-blue);border-color:var(--deep-blue);">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="contact.html">Contact Us</a>
+      <a href="about.html">About GMCOA</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html">Media Centre</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="cpd.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
