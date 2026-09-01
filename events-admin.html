@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events Admin | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U Events
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="admin.html">Applications</a>
+      <a href="finance.html">Finance</a>
+      <a href="governance.html">Governance</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Event Organizers</div>
+    <h1>Events Administration</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="section-head">
+        <div class="section-eyebrow">Virtual Meeting Links</div>
+        <h2>Zoom / Google Meet / Teams</h2>
+      </div>
+      <div class="finance-form-box" style="margin-bottom:22px;">
+        <h3 id="link-event-title">Select an event to edit its link</h3>
+        <form id="meeting-link-form">
+          <label>Platform</label>
+          <select name="virtual_meeting_platform">
+            <option>Zoom</option><option>Google Meet</option><option>Microsoft Teams</option><option>Other</option>
+          </select>
+          <label>Meeting Link</label>
+          <input type="url" name="virtual_meeting_link" placeholder="https://zoom.us/j/...">
+          <button class="btn btn-primary" type="submit">Save Link</button>
+        </form>
+      </div>
+      <div id="events-link-list" style="margin-bottom:30px;"><p class="card-empty">Loading…</p></div>
+
+      <div class="section-head">
+        <div class="section-eyebrow">Attendance &amp; Payment</div>
+        <h2>Registrations</h2>
+      </div>
+      <div class="news-filters">
+        <select id="event-select"><option value="">Loading events…</option></select>
+      </div>
+      <div id="registrations-list"></div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="events-admin.js"></script>
+</body>
+</html>
