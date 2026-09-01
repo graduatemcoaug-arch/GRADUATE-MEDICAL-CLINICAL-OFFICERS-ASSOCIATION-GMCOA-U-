@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html">Public Site</a>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="my-research.html">My Research</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="forums.html">Forums</a>
+      <a href="mentorship.html">Mentorship</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" id="welcome-email">Members Only</div>
+    <h1>My Dashboard</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="no-application-note" style="display:none;" class="coming-soon-card">
+      No application found under this email. If you haven't applied yet, <a href="apply.html">apply for membership</a> first, then log in here using the same email.
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card" id="profile-card">
+        <h3>Personal Profile</h3>
+        <div class="dash-row"><span class="dr-label">Name</span><span class="dr-value" id="profile-name">—</span></div>
+        <div class="dash-row"><span class="dr-label">Category</span><span class="dr-value" id="profile-category">—</span></div>
+        <div class="dash-row"><span class="dr-label">Application Status</span><span class="dr-value" id="profile-status">—</span></div>
+        <div class="dash-row"><span class="dr-label">Location</span><span class="dr-value" id="profile-location">—</span></div>
+        <div class="dash-row"><span class="dr-label">Employer</span><span class="dr-value" id="profile-employer">—</span></div>
+      </div>
+
+      <div class="dash-card" id="membership-status-card" style="display:none;">
+        <h3>Membership Status</h3>
+        <div class="dash-row"><span class="dr-label">Membership No.</span><span class="dr-value" id="membership-number-display">—</span></div>
+        <div class="dash-row"><span class="dr-label">Status</span><span class="dr-value" id="membership-status-display">—</span></div>
+        <div class="dash-row"><span class="dr-label">Valid Until</span><span class="dr-value" id="membership-expiry-display">—</span></div>
+      </div>
+
+      <div class="dash-card" id="subscription-status-card" style="display:none;">
+        <h3>Subscription Status</h3>
+        <div class="dash-row"><span class="dr-label" id="sub-year-label">This Year's Dues</span><span id="subscription-status-display">—</span></div>
+        <div id="subscription-history"></div>
+      </div>
+
+      <div class="dash-card">
+        <h3>CPD Points</h3>
+        <div class="cpd-total">
+          <div class="num" id="cpd-points-total">0</div>
+          <div class="lbl">Points Earned</div>
+        </div>
+        <p id="cpd-target-note" class="dash-empty-note" style="text-align:center;"></p>
+      </div>
+
+      <div class="dash-card dash-full">
+        <h3>My Courses</h3>
+        <div id="cpd-enrollment-list"><p class="dash-empty-note">Loading…</p></div>
+      </div>
+
+      <div class="dash-card dash-full">
+        <h3>Coming Soon</h3>
+        <div class="coming-soon-card">
+          Event Registrations, Research Contributions, and Committee Memberships will appear here in a future update. Certificates are available from your CPD courses above, and Elections are at <a href="elections.html">elections.html</a>.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="dashboard.js?v=2"></script>
+</body>
+</html>
