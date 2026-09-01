@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research &amp; Innovation | GMCOA-U</title>
+<meta name="description" content="Published research, innovation projects, conference abstracts, research collaborations, student research, and research awards from GMCOA-U members.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="membership.html">Membership</a>
+      <a href="research.html">Research</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Advancing Clinical Knowledge</div>
+    <h1>Research &amp; Innovation Centre</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="awards-strip" id="awards-strip">
+      <!-- filled by research.js with featured Research Awards, hidden if none -->
+    </div>
+
+    <div class="news-filters">
+      <select id="research-category-filter">
+        <option value="">All Categories</option>
+        <option value="Published Research">Published Research</option>
+        <option value="Innovation Project">Innovation Project</option>
+        <option value="Conference Abstract">Conference Abstract</option>
+        <option value="Research Collaboration">Research Collaboration</option>
+        <option value="Student Research">Student Research</option>
+        <option value="Research Award">Research Award</option>
+      </select>
+    </div>
+
+    <div id="research-list">
+      <p class="card-empty">Loading research…</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Working on research or an innovation project?</h2>
+      <p>Share it with the GMCOA-U Education &amp; Research Committee to be featured in the repository.</p>
+      <a class="btn btn-primary" href="mailto:graduate.mcoa.ug@gmail.com?subject=Research%20Submission">Submit Your Work</a>
+      <p style="margin-top:14px;font-size:0.88rem;">Running an active study? <a href="my-research.html">Register it and track ethics approval</a> (member login required).</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="about.html">About GMCOA</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html#downloads">Downloads</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="research.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
