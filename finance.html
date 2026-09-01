@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Dashboard | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U Finance
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="admin.html">Applications</a>
+      <a href="governance.html">Governance</a>
+      <a href="comms.html">Communications</a>
+      <a href="directory.html">Directory</a>
+      <a href="election-admin.html">Elections</a>
+      <a href="events-admin.html">Events</a>
+      <a href="agm-admin.html">AGM/EGM</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Treasurer &amp; Secretariat</div>
+    <h1>Finance Dashboard</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="finance-summary">
+        <div class="finance-card income"><div class="fc-label">Total Income</div><div class="fc-value" id="total-income">—</div></div>
+        <div class="finance-card expenditure"><div class="fc-label">Total Expenditure</div><div class="fc-value" id="total-expenditure">—</div></div>
+        <div class="finance-card balance"><div class="fc-label">Current Balance</div><div class="fc-value" id="total-balance">—</div></div>
+      </div>
+
+      <div class="media-tabs" id="finance-tabs">
+        <button class="active" data-tab="ledger">Ledger</button>
+        <button data-tab="budget">Budget</button>
+        <button data-tab="receipts">Receipts</button>
+        <button data-tab="procurement">Procurement</button>
+        <button data-tab="donors">Donors &amp; Sponsors</button>
+        <button data-tab="conference">Conference Finance</button>
+        <button data-tab="reports">Reports</button>
+        <button data-tab="audit">Audit Trail</button>
+      </div>
+
+      <!-- LEDGER -->
+      <div class="comms-panel active" id="tab-ledger">
+        <div class="finance-forms">
+          <div class="finance-form-box">
+            <h3>Record Income</h3>
+            <form id="income-form">
+              <label>Source</label>
+              <select name="category" required>
+                <option>Membership Fees</option><option>CPD Revenue</option><option>Conference Revenue</option>
+                <option>Donations</option><option>Grants</option><option>Other Income</option>
+              </select>
+              <label>Description</label>
+              <input type="text" name="description">
+              <label>Amount (UGX)</label>
+              <input type="number" name="amount" min="0" step="1" required>
+              <label>Payment Method</label>
+              <select name="payment_method" required>
+                <option>Cash</option><option>Mobile Money</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option>
+              </select>
+              <label>Transaction Reference <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+              <input type="text" name="transaction_reference" placeholder="e.g. Mobile Money txn ID">
+              <label>Bank Name <span style="font-weight:400;color:var(--text-muted);">(if bank transfer)</span></label>
+              <input type="text" name="bank_name">
+              <label>Membership Number <span style="font-weight:400;color:var(--text-muted);">(if subscription)</span></label>
+              <input type="text" name="membership_number">
+              <label>Date</label>
+              <input type="date" name="transaction_date">
+              <button class="btn btn-primary" type="submit">Add Income</button>
+            </form>
+          </div>
+          <div class="finance-form-box">
+            <h3>Record Expenditure</h3>
+            <form id="expenditure-form">
+              <label>Category</label>
+              <select name="category" required>
+                <option>Office & Administration</option><option>Events & Conferences</option><option>CPD & Training</option>
+                <option>Advocacy & Communications</option><option>Salaries & Allowances</option><option>Travel & Transport</option><option>Other</option>
+              </select>
+              <label>Description</label>
+              <input type="text" name="description">
+              <label>Amount (UGX)</label>
+              <input type="number" name="amount" min="0" step="1" required>
+              <label>Payment Method</label>
+              <select name="payment_method" required>
+                <option>Cash</option><option>Mobile Money</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option>
+              </select>
+              <label>Transaction Reference <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+              <input type="text" name="transaction_reference">
+              <label>Date</label>
+              <input type="date" name="transaction_date">
+              <button class="btn btn-primary" type="submit">Add Expenditure</button>
+            </form>
+          </div>
+        </div>
+        <p class="dash-empty-note" id="approval-threshold-note" style="margin-bottom:14px;"></p>
+        <div id="tx-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- BUDGET -->
+      <div class="comms-panel" id="tab-budget">
+        <div class="finance-form-box" style="margin-bottom:22px;">
+          <h3>Set a Budget</h3>
+          <form id="budget-form">
+            <label>Category</label>
+            <input type="text" name="category" placeholder="e.g. Events & Conferences" required>
+            <label>Year</label>
+            <input type="number" name="budget_year" min="2020" max="2100" required>
+            <label>Budgeted Amount (UGX)</label>
+            <input type="number" name="budgeted_amount" min="0" step="1" required>
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Save Budget</button>
+          </form>
+        </div>
+        <div id="budget-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- RECEIPTS -->
+      <div class="comms-panel" id="tab-receipts">
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:18px;">Printable electronic receipts for any recorded income transaction.</p>
+        <div id="receipts-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- PROCUREMENT -->
+      <div class="comms-panel" id="tab-procurement">
+        <div class="finance-form-box" style="margin-bottom:22px;">
+          <h3>New Purchase Request</h3>
+          <form id="procurement-form">
+            <label>Item / Description</label>
+            <input type="text" name="item_description" required>
+            <label>Quantity</label>
+            <input type="number" name="quantity" min="1">
+            <label>Estimated Cost (UGX)</label>
+            <input type="number" name="estimated_cost" min="0" step="1">
+            <label>Supplier</label>
+            <input type="text" name="supplier">
+            <label>Requested By</label>
+            <input type="text" name="requested_by">
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Submit Request</button>
+          </form>
+        </div>
+        <div id="procurement-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- DONORS & SPONSORS -->
+      <div class="comms-panel" id="tab-donors">
+        <div class="finance-form-box" style="margin-bottom:22px;">
+          <h3>Add Donor / Sponsor</h3>
+          <form id="donor-form">
+            <label>Name</label>
+            <input type="text" name="name" required>
+            <label>Type</label>
+            <select name="donor_type">
+              <option>Development Partner</option><option>NGO</option><option>Government Agency</option>
+              <option>Corporate Sponsor</option><option>Individual Donor</option>
+            </select>
+            <label>Contact Person</label>
+            <input type="text" name="contact_person">
+            <label>Contact Email</label>
+            <input type="email" name="contact_email">
+            <label>Total Contributed (UGX)</label>
+            <input type="number" name="total_contributed" min="0" step="1">
+            <label>Agreement Status</label>
+            <select name="agreement_status">
+              <option>None</option><option>Draft</option><option>Signed</option><option>Expired</option>
+            </select>
+            <label>Reporting Deadline</label>
+            <input type="date" name="reporting_deadline">
+            <label>Project Deliverables</label>
+            <input type="text" name="project_deliverables">
+            <label>Recognition Status</label>
+            <select name="recognition_status">
+              <option>Not Recognized</option><option>Pending</option><option>Recognized</option>
+            </select>
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Save</button>
+          </form>
+        </div>
+        <div id="donors-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- CONFERENCE FINANCE -->
+      <div class="comms-panel" id="tab-conference">
+        <div class="finance-form-box" style="margin-bottom:22px;">
+          <h3>Add Sponsorship Package</h3>
+          <form id="sponsorship-form">
+            <label>Event / Conference Title</label>
+            <input type="text" name="event_title" required>
+            <label>Sponsor Name</label>
+            <input type="text" name="sponsor_name" required>
+            <label>Package Name</label>
+            <input type="text" name="package_name" placeholder="e.g. Gold Package">
+            <label>Amount (UGX)</label>
+            <input type="number" name="amount" min="0" step="1" required>
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Save Sponsorship</button>
+          </form>
+        </div>
+        <div id="sponsorship-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="comms-panel" id="tab-reports">
+        <div class="news-filters">
+          <select id="report-type">
+            <option value="income-statement">Income Statement</option>
+            <option value="expenditure-report">Expenditure Report</option>
+            <option value="budget-performance">Budget Performance Report</option>
+            <option value="subscription-collection">Subscription Collection Report</option>
+            <option value="outstanding-debtors">Outstanding Debtors</option>
+            <option value="donation-report">Donation Report</option>
+            <option value="sponsorship-report">Sponsorship Report</option>
+            <option value="conference-financial">Conference Financial Report</option>
+          </select>
+          <button class="btn btn-primary" id="generate-report-btn">Generate</button>
+          <button class="btn btn-outline" id="export-csv-btn" style="color:var(--deep-blue);border-color:var(--deep-blue);">Export CSV</button>
+        </div>
+        <div id="report-output"><p class="card-empty">Choose a report type and tap Generate.</p></div>
+      </div>
+
+      <!-- AUDIT TRAIL -->
+      <div class="comms-panel" id="tab-audit">
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:18px;">Every change to a financial transaction is logged automatically — who, when, and what changed.</p>
+        <div id="audit-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="finance.js"></script>
+</body>
+</html>
