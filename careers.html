@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careers &amp; Opportunities | GMCOA-U</title>
+<meta name="description" content="Job vacancies, scholarships, research grants, consultancies, volunteer opportunities, internships, and partner opportunities for GMCOA-U members.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Grow Your Career</div>
+    <h1>Careers &amp; Opportunities</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="news-filters">
+      <select id="career-type-filter">
+        <option value="">All Types</option>
+        <option value="Job Vacancy">Job Vacancy</option>
+        <option value="Scholarship">Scholarship</option>
+        <option value="Research Grant">Research Grant</option>
+        <option value="Consultancy">Consultancy</option>
+        <option value="Volunteer Opportunity">Volunteer Opportunity</option>
+        <option value="Internship">Internship</option>
+        <option value="Partner Opportunity">Partner Opportunity</option>
+      </select>
+    </div>
+    <div id="careers-list">
+      <p class="card-empty">Loading opportunities…</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="newsletter">
+      <div>
+        <h2>Never miss an opportunity</h2>
+        <p>Subscribe to get an alert whenever a new job, scholarship, or grant is posted.</p>
+      </div>
+      <form class="newsletter-form" id="career-alert-form">
+        <label class="sr-only" for="ca-name">Name</label>
+        <input id="ca-name" name="name" type="text" placeholder="Full name" required>
+        <label class="sr-only" for="ca-email">Email</label>
+        <input id="ca-email" name="email" type="email" placeholder="Email address" required>
+        <button class="btn btn-primary" type="submit">Get Alerts</button>
+      </form>
+    </div>
+    <p class="form-note"></p>
+  </div>
+</section>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="about.html">About GMCOA</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html">Media Centre</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="careers.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
