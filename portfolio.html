@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Professional Portfolio | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="my-research.html">My Research</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" id="welcome-note">My Portfolio</div>
+    <h1>Professional e-Portfolio</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:22px;">
+      Your lifelong professional record — qualifications, licences, employment, CPD, research, presentations, awards, leadership, and outreach. You control what's public.
+    </p>
+
+    <div class="finance-form-box" style="margin-bottom:30px;">
+      <h3>Add an Entry</h3>
+      <form id="entry-form">
+        <label>Type</label>
+        <select name="entry_type" required>
+          <option>Academic Qualification</option>
+          <option>Professional Licence</option>
+          <option>Employment History</option>
+          <option>CPD Achievement</option>
+          <option>Research Publication</option>
+          <option>Conference Presentation</option>
+          <option>Award</option>
+          <option>Leadership Position</option>
+          <option>Community Outreach</option>
+          <option>Professional Interest</option>
+        </select>
+        <label>Title</label>
+        <input type="text" name="title" placeholder="e.g. Bachelor's Degree in Clinical Medicine" required>
+        <label>Organization / Institution</label>
+        <input type="text" name="organization">
+        <label>Date</label>
+        <input type="date" name="entry_date">
+        <label>Description</label>
+        <input type="text" name="description">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+          <input type="checkbox" name="is_public" style="width:auto;">
+          Make this entry visible on my public profile (future feature)
+        </label>
+        <button class="btn btn-primary" type="submit" style="margin-top:16px;">Add Entry</button>
+      </form>
+    </div>
+
+    <div class="portfolio-type-tabs">
+      <button class="active" data-type="">All</button>
+      <button data-type="Academic Qualification">Qualifications</button>
+      <button data-type="Professional Licence">Licences</button>
+      <button data-type="Employment History">Employment</button>
+      <button data-type="CPD Achievement">CPD</button>
+      <button data-type="Research Publication">Research</button>
+      <button data-type="Conference Presentation">Presentations</button>
+      <button data-type="Award">Awards</button>
+      <button data-type="Leadership Position">Leadership</button>
+      <button data-type="Community Outreach">Outreach</button>
+    </div>
+
+    <div id="portfolio-list">
+      <p class="card-empty">Loading…</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="portfolio.js"></script>
+</body>
+</html>
