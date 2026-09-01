@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Communications Hub | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U Comms
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="admin.html">Applications</a>
+      <a href="finance.html">Finance</a>
+      <a href="governance.html">Governance</a>
+      <a href="directory.html">Directory</a>
+      <a href="election-admin.html">Elections</a>
+      <a href="events-admin.html">Events</a>
+      <a href="agm-admin.html">AGM/EGM</a>
+      <a href="secretariat.html">Secretariat</a>
+      <a href="index.html">Public Site</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="display:none;color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Secretariat</div>
+    <h1>Communications Hub</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login">
+      <div class="admin-login-box">
+        <h3 style="margin:0;">Admin Login</h3>
+        <form id="admin-login-form">
+          <label for="admin-email">Email</label>
+          <input id="admin-email" type="email" required>
+          <label for="admin-password">Password</label>
+          <input id="admin-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="comms-tabs">
+        <button id="tab-corr" class="active">Correspondence Log</button>
+        <button id="tab-stake">Stakeholder Directory</button>
+      </div>
+
+      <div class="comms-panel active" id="panel-corr">
+        <div class="finance-form-box" style="margin-bottom:26px;">
+          <h3>Log Correspondence</h3>
+          <form id="corr-form">
+            <label>Reference Number</label>
+            <input type="text" name="reference_number" placeholder="e.g. GMCOA-CORR-2026-021" required>
+            <label>Direction</label>
+            <select name="direction" required>
+              <option value="Incoming">Incoming</option>
+              <option value="Outgoing">Outgoing</option>
+            </select>
+            <label>Type</label>
+            <select name="correspondence_type">
+              <option>Government Letter</option>
+              <option>Partner Letter</option>
+              <option>Member Complaint</option>
+              <option>Public Enquiry</option>
+              <option>Invitation</option>
+              <option>Funding Request</option>
+              <option>Circular</option>
+              <option>Press Statement</option>
+              <option>Position Paper</option>
+              <option>Appreciation Letter</option>
+              <option>Meeting Invitation</option>
+              <option>Other</option>
+            </select>
+            <label>Subject</label>
+            <input type="text" name="subject" required>
+            <label>From / To</label>
+            <input type="text" name="counterpart" placeholder="e.g. Allied Health Professionals Council">
+            <label>Date</label>
+            <input type="date" name="correspondence_date">
+            <label>Document Link <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+            <input type="url" name="document_link" placeholder="https://...">
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Log Correspondence</button>
+          </form>
+        </div>
+        <div id="corr-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <div class="comms-panel" id="panel-stake">
+        <div class="finance-form-box" style="margin-bottom:26px;">
+          <h3>Add Stakeholder</h3>
+          <form id="stake-form">
+            <label>Organization Name</label>
+            <input type="text" name="organization_name" required>
+            <label>Category</label>
+            <select name="category">
+              <option>Government</option>
+              <option>Regulatory Body</option>
+              <option>Academic Institution</option>
+              <option>Development Partner</option>
+              <option>NGO</option>
+              <option>Media</option>
+              <option>International Organization</option>
+              <option>Professional Association</option>
+              <option>Other</option>
+            </select>
+            <label>Contact Person</label>
+            <input type="text" name="contact_person">
+            <label>Contact Email</label>
+            <input type="email" name="contact_email">
+            <label>Contact Phone</label>
+            <input type="tel" name="contact_phone">
+            <label>Last Engagement Date</label>
+            <input type="date" name="last_engagement_date">
+            <label>Follow-up Date</label>
+            <input type="date" name="follow_up_date">
+            <label>Notes</label>
+            <input type="text" name="notes">
+            <button class="btn btn-primary" type="submit">Add Stakeholder</button>
+          </form>
+        </div>
+        <div id="stake-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="comms.js"></script>
+</body>
+</html>
