@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Events | GMCOA-U</title>
+<meta name="description" content="Upcoming and past GMCOA-U events — annual conferences, scientific meetings, regional and district meetings, CPD workshops, webinars, and community outreach.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="about.html">About</a>
+      <a href="research.html">Research</a>
+      <a href="membership.html">Membership</a>
+      <a href="news.html">News</a>
+      <a href="events.html">Events</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-outline" href="portal.html">Member Login</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">What's Coming Up</div>
+    <h1>Events</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="text-align:right;margin-bottom:16px;"><a href="event-pass.html">Already registered? Retrieve your pass →</a></p>
+
+    <div class="countdown-banner" id="countdown-banner" style="display:none;">
+      <div>
+        <div class="cd-label">Next Event</div>
+        <div class="cd-title" id="cd-title"></div>
+      </div>
+      <div class="countdown-timer" id="countdown-timer"></div>
+    </div>
+
+    <div class="events-toolbar">
+      <div class="view-toggle">
+        <button id="view-list-btn" class="active">List View</button>
+        <button id="view-cal-btn">Calendar View</button>
+      </div>
+      <select id="event-type-filter">
+        <option value="">All Event Types</option>
+      </select>
+    </div>
+
+    <div class="event-list-view" id="event-list-view">
+      <p class="card-empty">Loading events…</p>
+    </div>
+
+    <div class="calendar-view" id="calendar-view">
+      <div class="cal-header">
+        <button id="cal-prev">‹</button>
+        <div class="cal-month" id="cal-month-label"></div>
+        <button id="cal-next">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div id="event-pass-container" style="display:none;margin-top:30px;"></div>
+  </div>
+</section>
+
+<div class="enroll-modal-bg" id="event-reg-modal-bg">
+  <div class="enroll-modal">
+    <h3>Register: <span id="reg-event-title"></span></h3>
+    <form id="event-reg-form">
+      <label for="er-name">Full Name</label>
+      <input id="er-name" name="full_name" type="text" required>
+      <label for="er-email">Email</label>
+      <input id="er-email" name="email" type="email" required>
+      <label for="er-phone">Phone <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+      <input id="er-phone" name="phone" type="tel">
+      <label for="er-attendance">Attendance Type</label>
+      <select id="er-attendance" name="attendance_type" required>
+        <option value="Physical">Physical</option>
+        <option value="Virtual">Virtual</option>
+      </select>
+      <p id="event-reg-note" style="font-size:0.85rem;margin-top:10px;"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" type="submit">Confirm Registration</button>
+        <button class="btn btn-outline" type="button" id="event-reg-cancel" style="color:var(--deep-blue);border-color:var(--deep-blue);">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div>
+      <h4>GMCOA-U</h4>
+      <a href="about.html">About GMCOA</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="membership.html">Membership</a>
+      <a href="verify.html">Verify Member</a>
+      <a href="elections.html">Elections</a>
+      <a href="agm.html">General Meetings</a>
+      <a href="about.html#governance">Constitution</a>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="research.html">Research</a>
+      <a href="advocacy.html">Advocacy</a>
+      <a href="media.html#downloads">Downloads</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <a href="mailto:graduate.mcoa.ug@gmail.com">graduate.mcoa.ug@gmail.com</a>
+      <a href="tel:+256782024799">+256 782 024799</a>
+      <a href="tel:+256703706927">+256 703 706927</a>
+      <a href="contact.html">P.O. Box 118044, Wakiso, Uganda</a>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> Graduate Medical Clinical Officers Association of Uganda. All rights reserved.</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="events.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
