@@ -406,19 +406,48 @@ async function generateInvoice(e) {
 }
 
 function renderInvoicePreview(inv) {
-  document.getElementById("invoice-output").innerHTML = `
-    <div class="cert-preview" style="max-width:420px;padding:26px 22px;">
-      <div class="cert-org">GMCOA-U Payment Invoice</div>
-      <h2 style="font-size:1.1rem;">${escapeHtmlD(inv.invoice_number)}</h2>
-      <div style="text-align:left;margin-top:14px;font-size:0.88rem;">
-        <div class="dash-row"><span class="dr-label">Type</span><span class="dr-value">${escapeHtmlD(inv.payment_type)}</span></div>
-        <div class="dash-row"><span class="dr-label">Details</span><span class="dr-value">${escapeHtmlD(inv.reference_note || "—")}</span></div>
-        <div class="dash-row"><span class="dr-label">Amount</span><span class="dr-value">UGX ${Number(inv.amount).toLocaleString()}</span></div>
-        <div class="dash-row"><span class="dr-label">Status</span><span class="dr-value">${escapeHtmlD(inv.status)}</span></div>
-        <div class="dash-row"><span class="dr-label">Date</span><span class="dr-value">${new Date(inv.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span></div>
+  document.getElementById("invoice-output").innerHTML = `<p class="dash-empty-note">Invoice generated — <button class="btn btn-primary" style="padding:8px 16px;" onclick='openInvoicePrintWindow(${JSON.stringify(inv).replace(/'/g, "&apos;")})'>View / Print Invoice</button></p>`;
+  openInvoicePrintWindow(inv);
+}
+
+function openInvoicePrintWindow(inv) {
+  const logoUrl = new URL("logo.png", location.href).href;
+  const w = window.open("", "_blank");
+  w.document.write(`
+    <html><head><title>Invoice ${inv.invoice_number}</title>
+    <style>
+      body{font-family:sans-serif;padding:40px;color:#17242E;max-width:600px;margin:0 auto;}
+      .header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #0B3D62;padding-bottom:16px;margin-bottom:20px;}
+      .header img{width:56px;height:56px;}
+      .header h2{margin:0;color:#0B3D62;}
+      .header p{margin:2px 0 0;color:#55666F;font-size:0.85rem;}
+      h1{color:#0B3D62;font-size:1.3rem;}
+      table{width:100%;border-collapse:collapse;margin-top:16px;}
+      td{padding:8px 0;border-bottom:1px solid #E1E8EC;}
+    </style>
+    </head><body>
+    <div class="header">
+      <img src="${logoUrl}" alt="GMCOA-U">
+      <div>
+        <h2>GMCOA-U</h2>
+        <p>Graduate Medical Clinical Officers Association of Uganda</p>
+        <p>P.O. Box 118044, Wakiso, Uganda</p>
       </div>
     </div>
-    <div class="card-actions"><button class="btn btn-primary" onclick="window.print()">Print Invoice</button></div>`;
+    <h1>Payment Invoice</h1>
+    <table>
+      <tr><td><strong>Invoice Number</strong></td><td>${inv.invoice_number}</td></tr>
+      <tr><td><strong>Member Name</strong></td><td>${inv.member_name}</td></tr>
+      <tr><td><strong>Type</strong></td><td>${inv.payment_type}</td></tr>
+      <tr><td><strong>Details</strong></td><td>${inv.reference_note || "—"}</td></tr>
+      <tr><td><strong>Amount</strong></td><td>UGX ${Number(inv.amount).toLocaleString()}</td></tr>
+      <tr><td><strong>Status</strong></td><td>${inv.status}</td></tr>
+      <tr><td><strong>Date</strong></td><td>${new Date(inv.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td></tr>
+    </table>
+    <p style="margin-top:30px;color:#55666F;font-size:0.85rem;">Pay via Mobile Money to +256 751 351607 (Dr. Herman Beigana, Treasurer), then message the Secretariat with this invoice number to confirm.</p>
+    <script>window.print();</script>
+    </body></html>`);
+  w.document.close();
 }
 
 async function loadMyInvoices(email) {
@@ -453,12 +482,30 @@ async function printMyReceipt(transactionId) {
 
   const receiptNo = "RCT-" + t.id.slice(0, 8).toUpperCase();
   const verificationCode = t.id.slice(-6).toUpperCase();
+  const logoUrl = new URL("logo.png", location.href).href;
   const w = window.open("", "_blank");
   w.document.write(`
     <html><head><title>Receipt ${receiptNo}</title>
-    <style>body{font-family:sans-serif;padding:40px;color:#17242E;} h1{color:#0B3D62;} table{width:100%;border-collapse:collapse;margin-top:20px;} td{padding:8px 0;border-bottom:1px solid #E1E8EC;}</style>
+    <style>
+      body{font-family:sans-serif;padding:40px;color:#17242E;max-width:600px;margin:0 auto;}
+      .header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #0B3D62;padding-bottom:16px;margin-bottom:20px;}
+      .header img{width:56px;height:56px;}
+      .header h2{margin:0;color:#0B3D62;}
+      .header p{margin:2px 0 0;color:#55666F;font-size:0.85rem;}
+      h1{color:#0B3D62;font-size:1.3rem;}
+      table{width:100%;border-collapse:collapse;margin-top:16px;}
+      td{padding:8px 0;border-bottom:1px solid #E1E8EC;}
+    </style>
     </head><body>
-    <h1>GMCOA-U Official Receipt</h1>
+    <div class="header">
+      <img src="${logoUrl}" alt="GMCOA-U">
+      <div>
+        <h2>GMCOA-U</h2>
+        <p>Graduate Medical Clinical Officers Association of Uganda</p>
+        <p>P.O. Box 118044, Wakiso, Uganda</p>
+      </div>
+    </div>
+    <h1>Official Receipt</h1>
     <table>
       <tr><td><strong>Receipt Number</strong></td><td>${receiptNo}</td></tr>
       <tr><td><strong>Category</strong></td><td>${t.category}</td></tr>
@@ -467,7 +514,6 @@ async function printMyReceipt(transactionId) {
       <tr><td><strong>Date</strong></td><td>${new Date(t.transaction_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td></tr>
       <tr><td><strong>Digital Verification Code</strong></td><td>${verificationCode}</td></tr>
     </table>
-    <p style="margin-top:30px;color:#55666F;font-size:0.85rem;">Graduate Medical Clinical Officers Association of Uganda</p>
     <script>window.print();</script>
     </body></html>`);
   w.document.close();
