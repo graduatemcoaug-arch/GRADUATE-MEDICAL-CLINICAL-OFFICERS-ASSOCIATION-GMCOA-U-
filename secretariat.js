@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("task-form").addEventListener("submit", addTask);
   document.getElementById("committee-meeting-form").addEventListener("submit", addCommitteeMeeting);
   document.getElementById("goal-form").addEventListener("submit", addGoal);
+  document.getElementById("admin-back-to-threads").addEventListener("click", showAdminThreadList);
+  document.getElementById("admin-reply-form").addEventListener("submit", sendAdminReply);
 
   document.querySelectorAll("#sec-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -42,6 +44,7 @@ function showDashboard() {
   loadTasks();
   loadCommittees();
   loadGoals();
+  loadAdminThreads();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -199,6 +202,68 @@ async function loadGoals() {
       <div class="budget-bar"><div class="budget-bar-fill" style="width:${g.progress_percent}%;"></div></div>
       <div class="budget-nums"><span>${g.category || ""}</span><span>${g.progress_percent}% · ${g.status}</span></div>
     </div>`).join("");
+}
+
+/* ---------------- MESSAGES ---------------- */
+let adminCurrentThreadId = null;
+
+async function loadAdminThreads() {
+  const list = document.getElementById("admin-threads-list");
+  const { data, error } = await supabaseClient.from("message_threads").select("*").order("created_at", { ascending: false });
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No member messages yet.</p>`; return; }
+
+  list.innerHTML = data.map((t) => `
+    <div class="thread-row" data-id="${t.id}" data-subject="${escapeHtmlSt(t.subject)}">
+      <h4>${escapeHtmlSt(t.subject)}</h4>
+      <div class="tr-meta">${escapeHtmlSt(t.member_name)} · ${t.status} · ${new Date(t.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+    </div>`).join("");
+
+  document.querySelectorAll("#admin-threads-list .thread-row").forEach((row) => {
+    row.addEventListener("click", () => openAdminThread(row.dataset.id, row.dataset.subject));
+  });
+}
+
+function openAdminThread(threadId, subject) {
+  adminCurrentThreadId = threadId;
+  document.getElementById("admin-threads-list").style.display = "none";
+  document.getElementById("admin-thread-detail").style.display = "block";
+  document.getElementById("admin-thread-subject").textContent = subject;
+  loadAdminMessages();
+}
+
+function showAdminThreadList() {
+  document.getElementById("admin-thread-detail").style.display = "none";
+  document.getElementById("admin-threads-list").style.display = "block";
+  loadAdminThreads();
+}
+
+async function loadAdminMessages() {
+  const box = document.getElementById("admin-messages-box");
+  box.innerHTML = `<p class="card-empty">Loading…</p>`;
+  const { data, error } = await supabaseClient.from("thread_messages").select("*").eq("thread_id", adminCurrentThreadId).order("created_at", { ascending: true });
+  if (error) { box.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+
+  box.innerHTML = (data || []).map((m) => `
+    <div class="msg-bubble ${m.sender_role === "Member" ? "secretariat" : "member"}">
+      ${escapeHtmlSt(m.body)}
+      <div class="msg-meta">${m.sender_role} · ${new Date(m.created_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</div>
+    </div>`).join("");
+}
+
+async function sendAdminReply(e) {
+  e.preventDefault();
+  const form = e.target;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const { error } = await supabaseClient.from("thread_messages").insert({
+    thread_id: adminCurrentThreadId,
+    sender_email: session.user.email,
+    sender_role: "Secretariat",
+    body: form.body.value.trim(),
+  });
+  if (error) { alert("Failed: " + error.message); return; }
+  form.reset();
+  loadAdminMessages();
 }
 
 function escapeHtmlSt(str) {
