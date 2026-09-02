@@ -146,7 +146,7 @@ async function loadLeadership() {
     .join("");
 }
 
-
+function wireNewsletterForm() {
   const form = document.getElementById("newsletter-form");
   if (!form) return;
   form.addEventListener("submit", async (e) => {
