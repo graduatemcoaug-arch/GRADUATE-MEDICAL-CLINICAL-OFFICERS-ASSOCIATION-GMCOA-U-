@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("sponsorship-form").addEventListener("submit", addSponsorship);
   document.getElementById("generate-report-btn").addEventListener("click", generateReport);
   document.getElementById("export-csv-btn").addEventListener("click", exportReportCsv);
+  document.getElementById("invoice-status-filter").addEventListener("change", loadInvoicesAdmin);
 
   document.querySelectorAll("#finance-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -54,6 +55,7 @@ function showDashboard() {
   loadDonors();
   loadSponsorships();
   loadAuditLog();
+  loadInvoicesAdmin();
 }
 
 /* ---------------- LEDGER ---------------- */
@@ -104,6 +106,7 @@ async function loadFinanceData() {
 }
 
 function renderSummary(transactions) {
+  populateReportYears(transactions);
   const income = transactions.filter((t) => t.type === "Income" && t.approval_status === "Approved").reduce((s, t) => s + Number(t.amount), 0);
   const expenditure = transactions.filter((t) => t.type === "Expenditure" && t.approval_status === "Approved").reduce((s, t) => s + Number(t.amount), 0);
   document.getElementById("total-income").textContent = formatUGX(income);
@@ -187,6 +190,10 @@ function renderReceipts(transactions) {
 function printReceipt(id) {
   const t = allTransactions.find((tx) => tx.id === id);
   if (!t) return;
+  printReceiptForTransaction(t);
+}
+
+function printReceiptForTransaction(t) {
   const receiptNo = "RCT-" + t.id.slice(0, 8).toUpperCase();
   const verificationCode = t.id.slice(-6).toUpperCase();
   const w = window.open("", "_blank");
@@ -347,6 +354,18 @@ async function loadSponsorships() {
 
 let currentReportData = [];
 
+function populateReportYears(transactions) {
+  const select = document.getElementById("report-year");
+  if (!select || select.dataset.populated) return;
+
+  const years = new Set(transactions.map((t) => new Date(t.transaction_date).getFullYear()));
+  years.add(new Date().getFullYear());
+  const sorted = Array.from(years).sort((a, b) => b - a);
+
+  select.innerHTML = sorted.map((y) => `<option value="${y}">${y}</option>`).join("");
+  select.dataset.populated = "true";
+}
+
 async function generateReport() {
   const type = document.getElementById("report-type").value;
   const output = document.getElementById("report-output");
@@ -354,8 +373,40 @@ async function generateReport() {
 
   let rows = [];
   let headers = [];
+  let note = "";
+  const selectedYear = parseInt(document.getElementById("report-year").value || new Date().getFullYear(), 10);
 
-  if (type === "income-statement") {
+  if (type === "monthly-summary") {
+    headers = ["Month", "Income", "Expenditure", "Net", "Running Balance"];
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    let running = 0;
+    rows = monthNames.map((mName, i) => {
+      const monthTx = allTransactions.filter((t) => {
+        const d = new Date(t.transaction_date);
+        return d.getFullYear() === selectedYear && d.getMonth() === i && t.approval_status === "Approved";
+      });
+      const income = monthTx.filter((t) => t.type === "Income").reduce((s, t) => s + Number(t.amount), 0);
+      const expenditure = monthTx.filter((t) => t.type === "Expenditure").reduce((s, t) => s + Number(t.amount), 0);
+      const net = income - expenditure;
+      running += net;
+      return [mName + " " + selectedYear, income, expenditure, net, running];
+    });
+  } else if (type === "financial-position") {
+    const approved = allTransactions.filter((t) => t.approval_status === "Approved" && new Date(t.transaction_date).getFullYear() <= selectedYear);
+    const totalIncome = approved.filter((t) => t.type === "Income").reduce((s, t) => s + Number(t.amount), 0);
+    const totalExpenditure = approved.filter((t) => t.type === "Expenditure").reduce((s, t) => s + Number(t.amount), 0);
+    const byCategory = {};
+    approved.filter((t) => t.type === "Income").forEach((t) => { byCategory[t.category] = (byCategory[t.category] || 0) + Number(t.amount); });
+
+    headers = ["Item", "Amount (UGX)"];
+    rows = [
+      ["Cash & Cash Equivalents (Net Position)", totalIncome - totalExpenditure],
+      ["— Total Income Received (cumulative)", totalIncome],
+      ["— Total Expenditure (cumulative)", totalExpenditure],
+      ...Object.entries(byCategory).map(([cat, amt]) => [`   Income from: ${cat}`, amt]),
+    ];
+    note = "This is a simplified, cash-basis Statement of Financial Position — it reflects net cash received and spent, not a formal balance sheet with tracked assets, receivables, or payables.";
+  } else if (type === "income-statement") {
     headers = ["Date", "Source", "Description", "Amount"];
     rows = allTransactions.filter((t) => t.type === "Income").map((t) => [t.transaction_date, t.category, t.description || "", t.amount]);
   } else if (type === "expenditure-report") {
@@ -398,8 +449,9 @@ async function generateReport() {
     return;
   }
 
-  output.innerHTML = `<div class="tx-table-wrap"><table class="tx-table"><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${
-    rows.map((r) => `<tr>${r.map((cell) => `<td>${cell}</td>`).join("")}</tr>`).join("")
+  output.innerHTML = (note ? `<p class="dash-empty-note" style="margin-bottom:12px;">${note}</p>` : "") +
+    `<div class="tx-table-wrap"><table class="tx-table"><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${
+    rows.map((r) => `<tr>${r.map((cell) => `<td>${typeof cell === "number" ? cell.toLocaleString() : cell}</td>`).join("")}</tr>`).join("")
   }</tbody></table></div>`;
 }
 
@@ -436,6 +488,61 @@ async function loadAuditLog() {
         <div class="dir-meta">By ${escapeHtmlF(a.changed_by || "unknown")} · ${new Date(a.changed_at).toLocaleString("en-US")}</div>
       </div>
     </div>`).join("");
+}
+
+/* ---------------- INVOICES ---------------- */
+
+async function loadInvoicesAdmin() {
+  const list = document.getElementById("invoices-admin-list");
+  const statusFilter = document.getElementById("invoice-status-filter").value;
+
+  let query = supabaseClient.from("payment_invoices").select("*").order("created_at", { ascending: false });
+  if (statusFilter) query = query.eq("status", statusFilter);
+
+  const { data, error } = await query;
+
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No invoices here.</p>`; return; }
+
+  list.innerHTML = data.map((inv) => `
+    <div class="dir-row">
+      <div>
+        <div class="dir-name">${escapeHtmlF(inv.invoice_number)} — ${escapeHtmlF(inv.member_name)}</div>
+        <div class="dir-meta">${escapeHtmlF(inv.payment_type)} · ${escapeHtmlF(inv.reference_note || "")} · ${formatUGX(inv.amount)} · ${new Date(inv.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="status-pill ${inv.status.toLowerCase()}">${escapeHtmlF(inv.status)}</span>
+        ${inv.status === "Pending" ? `
+          <select class="invoice-method-select" data-id="${inv.id}">
+            <option>Mobile Money</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option><option>Other</option>
+          </select>
+          <button class="btn-approve" style="padding:5px 12px;font-size:0.78rem;" onclick="confirmInvoicePaid('${inv.id}')">Mark Paid</button>
+          <button class="delete-entry-btn" onclick="cancelInvoice('${inv.id}')">Cancel</button>` : ""}
+      </div>
+    </div>`).join("");
+}
+
+async function confirmInvoicePaid(id) {
+  const select = document.querySelector(`.invoice-method-select[data-id="${id}"]`);
+  const method = select ? select.value : "Other";
+
+  const { data: newTxId, error } = await supabaseClient.rpc("mark_invoice_paid", { p_invoice_id: id, p_payment_method: method });
+  if (error) { alert("Failed: " + error.message); return; }
+
+  loadInvoicesAdmin();
+  loadFinanceData();
+
+  if (newTxId) {
+    const { data: tx } = await supabaseClient.from("finance_transactions").select("*").eq("id", newTxId).single();
+    if (tx) printReceiptForTransaction(tx);
+  }
+}
+
+async function cancelInvoice(id) {
+  if (!confirm("Cancel this invoice?")) return;
+  const { error } = await supabaseClient.from("payment_invoices").update({ status: "Cancelled" }).eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadInvoicesAdmin();
 }
 
 /* ---------------- HELPERS ---------------- */
