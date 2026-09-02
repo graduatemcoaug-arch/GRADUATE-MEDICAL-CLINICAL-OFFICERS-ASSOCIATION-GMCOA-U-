@@ -193,11 +193,24 @@ function printReceipt(id) {
   printReceiptForTransaction(t);
 }
 
-function printReceiptForTransaction(t) {
+async function printReceiptForTransaction(t, existingWindow) {
+  const w = existingWindow || window.open("", "_blank");
+  if (!existingWindow) w.document.write("<p>Loading receipt…</p>");
+
+  let payerName = "—";
+  if (t.membership_number) {
+    const { data: member } = await supabaseClient
+      .from("member_directory")
+      .select("full_name")
+      .eq("membership_number", t.membership_number)
+      .maybeSingle();
+    if (member?.full_name) payerName = member.full_name;
+  }
+
   const receiptNo = "RCT-" + t.id.slice(0, 8).toUpperCase();
   const verificationCode = t.id.slice(-6).toUpperCase();
   const logoUrl = new URL("logo.png", location.href).href;
-  const w = window.open("", "_blank");
+  w.document.open();
   w.document.write(`
     <html><head><title>Receipt ${receiptNo}</title>
     <style>
@@ -222,6 +235,8 @@ function printReceiptForTransaction(t) {
     <h1>Official Receipt</h1>
     <table>
       <tr><td><strong>Receipt Number</strong></td><td>${receiptNo}</td></tr>
+      <tr><td><strong>Paid By</strong></td><td>${payerName}</td></tr>
+      <tr><td><strong>Membership Number</strong></td><td>${t.membership_number || "—"}</td></tr>
       <tr><td><strong>Category</strong></td><td>${t.category}</td></tr>
       <tr><td><strong>Payment Method</strong></td><td>${t.payment_method || "—"}</td></tr>
       <tr><td><strong>Transaction Reference</strong></td><td>${t.transaction_reference || "—"}</td></tr>
@@ -229,6 +244,12 @@ function printReceiptForTransaction(t) {
       <tr><td><strong>Date</strong></td><td>${new Date(t.transaction_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td></tr>
       <tr><td><strong>Digital Verification Code</strong></td><td>${verificationCode}</td></tr>
     </table>
+    <p style="margin-top:24px;font-size:0.9rem;">Thank you for your payment — your support strengthens GMCOA-U's mission to serve Graduate Medical Clinical Officers across Uganda.</p>
+    <div style="margin-top:36px;">
+      <img src="${new URL("treasurer-signature.png", location.href).href}" alt="Signature" style="height:60px;">
+      <div style="border-top:1px solid #333;width:220px;margin-top:2px;"></div>
+      <div style="font-size:0.8rem;color:#55666F;">Dr. Herman Beigana, Treasurer, GMCOA-U</div>
+    </div>
     <script>window.print();</script>
     </body></html>`);
   w.document.close();
@@ -543,15 +564,25 @@ async function confirmInvoicePaid(id) {
   const select = document.querySelector(`.invoice-method-select[data-id="${id}"]`);
   const method = select ? select.value : "Other";
 
+  const receiptWindow = window.open("", "_blank");
+  if (receiptWindow) receiptWindow.document.write("<p>Confirming payment…</p>");
+
   const { data: newTxId, error } = await supabaseClient.rpc("mark_invoice_paid", { p_invoice_id: id, p_payment_method: method });
-  if (error) { alert("Failed: " + error.message); return; }
+  if (error) {
+    if (receiptWindow) receiptWindow.close();
+    alert("Failed: " + error.message);
+    return;
+  }
 
   loadInvoicesAdmin();
   loadFinanceData();
 
   if (newTxId) {
     const { data: tx } = await supabaseClient.from("finance_transactions").select("*").eq("id", newTxId).single();
-    if (tx) printReceiptForTransaction(tx);
+    if (tx) printReceiptForTransaction(tx, receiptWindow);
+    else if (receiptWindow) receiptWindow.close();
+  } else if (receiptWindow) {
+    receiptWindow.close();
   }
 }
 
