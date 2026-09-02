@@ -1178,3 +1178,12 @@ footer.site-footer {
 .cert-preview h2 { color: var(--deep-blue); margin: 14px 0 4px; }
 .cert-preview .cert-name { font-size: 1.5rem; font-weight: 800; margin: 16px 0; color: var(--text); }
 .cert-preview .cert-num { font-size: 0.75rem; color: var(--text-muted); margin-top: 20px; }
+
+/* ---------- Secure Messaging ---------- */
+.thread-row { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 10px; cursor: pointer; }
+.thread-row h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.thread-row .tr-meta { font-size: 0.8rem; color: var(--text-muted); }
+.msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; }
+.msg-bubble.member { background: var(--deep-blue); color: #fff; margin-left: auto; }
+.msg-bubble.secretariat { background: var(--bg-soft); color: var(--text); }
+.msg-meta { font-size: 0.72rem; opacity: .75; margin-top: 4px; }
