@@ -864,6 +864,8 @@ footer.site-footer {
 .status-pill.pending { background: #FDF2E0; color: #B7791F; }
 .status-pill.approved { background: #E4F5EC; color: var(--green); }
 .status-pill.rejected { background: #FBEAEA; color: #B3261E; }
+.status-pill.paid { background: #E4F5EC; color: var(--green); }
+.status-pill.cancelled { background: var(--bg-soft); color: var(--text-muted); }
 
 /* ---------- Digital Membership Card ---------- */
 .membership-card {
