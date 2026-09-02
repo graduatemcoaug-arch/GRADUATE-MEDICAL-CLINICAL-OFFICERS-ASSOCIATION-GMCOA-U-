@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("admin-back-to-threads").addEventListener("click", showAdminThreadList);
   document.getElementById("admin-reply-form").addEventListener("submit", sendAdminReply);
   document.getElementById("gallery-form").addEventListener("submit", uploadGalleryPhoto);
+  document.getElementById("leadership-form").addEventListener("submit", saveLeader);
+  document.getElementById("leadership-cancel-edit").addEventListener("click", resetLeadershipForm);
 
   document.querySelectorAll("#sec-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -47,6 +49,7 @@ function showDashboard() {
   loadGoals();
   loadAdminThreads();
   loadGallery();
+  loadLeadershipAdmin();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -347,6 +350,106 @@ async function deleteGalleryPhoto(id) {
   const { error } = await supabaseClient.from("media_items").delete().eq("id", id);
   if (error) { alert("Failed: " + error.message); return; }
   loadGallery();
+}
+
+/* ---------------- LEADERSHIP ---------------- */
+
+async function saveLeader(e) {
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById("leadership-status");
+  const id = form.id.value;
+
+  let photoUrl = null;
+  const file = form.photo.files[0];
+  if (file) {
+    status.textContent = "Uploading photo…";
+    const path = `${Date.now()}-${file.name}`;
+    const { error: uploadError } = await supabaseClient.storage.from("leadership-photos").upload(path, file);
+    if (uploadError) {
+      status.textContent = "Photo upload failed: " + uploadError.message;
+      status.style.color = "#B3261E";
+      return;
+    }
+    const { data: urlData } = supabaseClient.storage.from("leadership-photos").getPublicUrl(path);
+    photoUrl = urlData.publicUrl;
+  }
+
+  const payload = {
+    full_name: form.full_name.value.trim(),
+    position: form.position.value.trim(),
+    phone: form.phone.value.trim() || null,
+    email: form.email.value.trim() || null,
+    qualifications: form.qualifications.value.trim() || null,
+    bio: form.bio.value.trim() || null,
+    welcome_message: form.welcome_message.value.trim() || null,
+    display_order: parseInt(form.display_order.value || "0", 10),
+  };
+  if (photoUrl) payload.photo_url = photoUrl;
+
+  let error;
+  if (id) {
+    ({ error } = await supabaseClient.from("leadership").update(payload).eq("id", id));
+  } else {
+    payload.is_active = true;
+    ({ error } = await supabaseClient.from("leadership").insert(payload));
+  }
+
+  if (error) {
+    status.textContent = "Failed: " + error.message;
+    status.style.color = "#B3261E";
+    return;
+  }
+
+  status.textContent = id ? "Updated!" : "Added!";
+  status.style.color = "var(--green)";
+  resetLeadershipForm();
+  loadLeadershipAdmin();
+}
+
+function resetLeadershipForm() {
+  const form = document.getElementById("leadership-form");
+  form.reset();
+  form.id.value = "";
+  document.getElementById("leadership-form-title").textContent = "Add a Leader";
+  document.getElementById("leadership-cancel-edit").style.display = "none";
+}
+
+async function loadLeadershipAdmin() {
+  const list = document.getElementById("leadership-list");
+  const { data, error } = await supabaseClient.from("leadership").select("*").order("display_order");
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No leadership records yet.</p>`; return; }
+
+  list.innerHTML = data.map((p) => `
+    <div class="dir-row">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;background-image:url('${p.photo_url || ""}');background-size:cover;background-position:center;background-color:var(--bg-soft);flex-shrink:0;"></div>
+        <div>
+          <div class="dir-name">${escapeHtmlSt(p.full_name)} ${p.is_active ? "" : "(inactive)"}</div>
+          <div class="dir-meta">${escapeHtmlSt(p.position)} · ${escapeHtmlSt(p.phone || "no phone")}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" onclick='editLeader(${JSON.stringify(p).replace(/'/g, "&apos;")})'>Edit</button>
+      </div>
+    </div>`).join("");
+}
+
+function editLeader(p) {
+  const form = document.getElementById("leadership-form");
+  form.id.value = p.id;
+  form.full_name.value = p.full_name || "";
+  form.position.value = p.position || "";
+  form.phone.value = p.phone || "";
+  form.email.value = p.email || "";
+  form.qualifications.value = p.qualifications || "";
+  form.bio.value = p.bio || "";
+  form.welcome_message.value = p.welcome_message || "";
+  form.display_order.value = p.display_order || 0;
+  document.getElementById("leadership-form-title").textContent = "Edit Leader";
+  document.getElementById("leadership-cancel-edit").style.display = "inline-block";
+  form.scrollIntoView({ behavior: "smooth" });
 }
 
 function escapeHtmlSt(str) {
