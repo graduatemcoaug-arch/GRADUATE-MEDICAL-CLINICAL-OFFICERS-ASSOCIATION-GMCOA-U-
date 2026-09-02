@@ -274,40 +274,46 @@ async function uploadGalleryPhoto(e) {
   e.preventDefault();
   const form = e.target;
   const status = document.getElementById("gallery-upload-status");
-  const file = form.photo.files[0];
-  if (!file) return;
+  const files = Array.from(form.photo.files).slice(0, 4);
+  if (files.length === 0) return;
 
-  status.textContent = "Uploading…";
-  status.style.color = "var(--text-muted)";
+  const title = form.title.value.trim();
+  const description = form.description.value.trim() || null;
+  const mediaType = form.media_type.value;
+  const publishedDate = form.published_date.value || new Date().toISOString().slice(0, 10);
 
-  const path = `${Date.now()}-${file.name}`;
-  const { error: uploadError } = await supabaseClient.storage.from("media-photos").upload(path, file);
+  let successCount = 0;
 
-  if (uploadError) {
-    status.textContent = "Upload failed: " + uploadError.message;
-    status.style.color = "#B3261E";
-    return;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    status.textContent = `Uploading photo ${i + 1} of ${files.length}…`;
+    status.style.color = "var(--text-muted)";
+
+    const path = `${Date.now()}-${i}-${file.name}`;
+    const { error: uploadError } = await supabaseClient.storage.from("media-photos").upload(path, file);
+
+    if (uploadError) {
+      status.textContent = `Photo ${i + 1} failed: ${uploadError.message}`;
+      status.style.color = "#B3261E";
+      continue;
+    }
+
+    const { data: urlData } = supabaseClient.storage.from("media-photos").getPublicUrl(path);
+
+    const { error } = await supabaseClient.from("media_items").insert({
+      title: files.length > 1 ? `${title} (${i + 1})` : title,
+      description,
+      media_type: mediaType,
+      thumbnail_url: urlData.publicUrl,
+      published_date: publishedDate,
+      is_published: true,
+    });
+
+    if (!error) successCount++;
   }
 
-  const { data: urlData } = supabaseClient.storage.from("media-photos").getPublicUrl(path);
-
-  const { error } = await supabaseClient.from("media_items").insert({
-    title: form.title.value.trim(),
-    description: form.description.value.trim() || null,
-    media_type: form.media_type.value,
-    thumbnail_url: urlData.publicUrl,
-    published_date: form.published_date.value || new Date().toISOString().slice(0, 10),
-    is_published: true,
-  });
-
-  if (error) {
-    status.textContent = "Failed to save: " + error.message;
-    status.style.color = "#B3261E";
-    return;
-  }
-
-  status.textContent = "Uploaded!";
-  status.style.color = "var(--green)";
+  status.textContent = `Uploaded ${successCount} of ${files.length} photo${files.length > 1 ? "s" : ""}.`;
+  status.style.color = successCount === files.length ? "var(--green)" : "#B7791F";
   form.reset();
   loadGallery();
 }
