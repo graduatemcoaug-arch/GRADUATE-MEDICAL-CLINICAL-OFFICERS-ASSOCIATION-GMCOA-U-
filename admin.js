@@ -100,6 +100,12 @@ function appCard(a) {
 async function approveApp(id) {
   if (!confirm("Approve this application? This generates a membership number and adds them to the public directory.")) return;
 
+  const { data: app } = await supabaseClient
+    .from("membership_applications")
+    .select("email,full_name")
+    .eq("id", id)
+    .maybeSingle();
+
   const { data, error } = await supabaseClient.rpc("approve_application", { p_id: id });
 
   if (error) {
@@ -107,7 +113,39 @@ async function approveApp(id) {
     return;
   }
   alert("Approved! Membership number: " + data);
+
+  if (app && app.email) {
+    sendEmail(
+      app.email,
+      "Welcome to GMCOA-U — Your Membership Application is Approved",
+      `<p>Dear ${escapeHtmlAd(app.full_name)},</p>
+       <p>Congratulations! Your application to join the Graduate Medical Clinical Officers Association of Uganda has been <strong>approved</strong>.</p>
+       <p><strong>Your Membership Number:</strong> ${data}</p>
+       <p>Your membership will become fully active once your subscription payment is confirmed. You can log in to your member portal and pay directly from your dashboard.</p>
+       <p>Welcome aboard!</p>
+       <p>— GMCOA-U Secretariat</p>`
+    );
+  }
+
   loadApplications();
+}
+
+async function sendEmail(to, subject, html) {
+  try {
+    await fetch("https://oxcefktkqqjxmekuyvwd.supabase.co/functions/v1/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to, subject, html }),
+    });
+  } catch (err) {
+    console.error("Email send failed:", err);
+  }
+}
+
+function escapeHtmlAd(str) {
+  const div = document.createElement("div");
+  div.textContent = str ?? "";
+  return div.innerHTML;
 }
 
 async function rejectApp(id) {
