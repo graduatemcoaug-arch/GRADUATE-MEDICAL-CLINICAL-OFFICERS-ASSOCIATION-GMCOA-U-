@@ -74,6 +74,7 @@
         <button data-tab="conference">Conference Finance</button>
         <button data-tab="reports">Reports</button>
         <button data-tab="audit">Audit Trail</button>
+        <button data-tab="invoices">Invoices</button>
       </div>
 
       <!-- LEDGER -->
@@ -245,6 +246,8 @@
       <div class="comms-panel" id="tab-reports">
         <div class="news-filters">
           <select id="report-type">
+            <option value="monthly-summary">Monthly Financial Summary</option>
+            <option value="financial-position">Statement of Financial Position</option>
             <option value="income-statement">Income Statement</option>
             <option value="expenditure-report">Expenditure Report</option>
             <option value="budget-performance">Budget Performance Report</option>
@@ -254,6 +257,7 @@
             <option value="sponsorship-report">Sponsorship Report</option>
             <option value="conference-financial">Conference Financial Report</option>
           </select>
+          <select id="report-year"></select>
           <button class="btn btn-primary" id="generate-report-btn">Generate</button>
           <button class="btn btn-outline" id="export-csv-btn" style="color:var(--deep-blue);border-color:var(--deep-blue);">Export CSV</button>
         </div>
@@ -264,6 +268,20 @@
       <div class="comms-panel" id="tab-audit">
         <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:18px;">Every change to a financial transaction is logged automatically — who, when, and what changed.</p>
         <div id="audit-list"><p class="card-empty">Loading…</p></div>
+      </div>
+
+      <!-- INVOICES -->
+      <div class="comms-panel" id="tab-invoices">
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:18px;">Invoices members have generated after initiating payment. Confirm receipt to mark Paid — this automatically records the matching income transaction.</p>
+        <div class="news-filters">
+          <select id="invoice-status-filter">
+            <option value="Pending">Pending</option>
+            <option value="Paid">Paid</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="">All</option>
+          </select>
+        </div>
+        <div id="invoices-admin-list"><p class="card-empty">Loading…</p></div>
       </div>
 
     </div>
