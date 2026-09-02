@@ -35,6 +35,17 @@ async function checkStatus(e) {
   const submitted = new Date(app.submitted_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
   if (statusClass === "approved" && app.membership_number) {
+    if (app.member_status === "Pending Payment") {
+      resultBox.innerHTML = `
+        <div class="verify-card">
+          <div class="verify-badge suspended">•</div>
+          <div>
+            <span class="verify-status suspended">Approved — Payment Pending</span>
+            <div class="verify-meta">Membership No: ${app.membership_number}. Your card will be issued once your subscription payment is confirmed by the Secretariat.</div>
+          </div>
+        </div>`;
+      return;
+    }
     renderCard(resultBox, app);
     return;
   }
