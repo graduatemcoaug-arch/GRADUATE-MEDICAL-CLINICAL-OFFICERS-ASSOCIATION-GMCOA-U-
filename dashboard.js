@@ -442,6 +442,9 @@ async function generateInvoice(e) {
   const app = window.currentApp;
   const email = window.currentEmail;
 
+  const invoiceWindow = window.open("", "_blank");
+  if (invoiceWindow) invoiceWindow.document.write("<p>Generating invoice…</p>");
+
   const payload = {
     invoice_number: generateInvoiceNumber(),
     member_email: email,
@@ -455,23 +458,25 @@ async function generateInvoice(e) {
   const { data: invoice, error } = await supabaseClient.from("payment_invoices").insert(payload).select().single();
 
   if (error) {
+    if (invoiceWindow) invoiceWindow.close();
     document.getElementById("invoice-output").innerHTML = `<p class="dash-empty-note">Failed to generate invoice: ${escapeHtmlD(error.message)}</p>`;
     return;
   }
 
   form.reset();
-  renderInvoicePreview(invoice);
+  renderInvoicePreview(invoice, invoiceWindow);
   loadMyInvoices(email);
 }
 
-function renderInvoicePreview(inv) {
+function renderInvoicePreview(inv, existingWindow) {
   document.getElementById("invoice-output").innerHTML = `<p class="dash-empty-note">Invoice generated — <button class="btn btn-primary" style="padding:8px 16px;" onclick='openInvoicePrintWindow(${JSON.stringify(inv).replace(/'/g, "&apos;")})'>View / Print Invoice</button></p>`;
-  openInvoicePrintWindow(inv);
+  openInvoicePrintWindow(inv, existingWindow);
 }
 
-function openInvoicePrintWindow(inv) {
+function openInvoicePrintWindow(inv, existingWindow) {
   const logoUrl = new URL("logo.png", location.href).href;
-  const w = window.open("", "_blank");
+  const w = existingWindow || window.open("", "_blank");
+  w.document.open();
   w.document.write(`
     <html><head><title>Invoice ${inv.invoice_number}</title>
     <style>
@@ -536,13 +541,18 @@ async function loadMyInvoices(email) {
 }
 
 async function printMyReceipt(transactionId) {
+  const w = window.open("", "_blank");
+  w.document.write("<p>Loading receipt…</p>");
+
   const { data: t, error } = await supabaseClient.from("finance_transactions").select("*").eq("id", transactionId).single();
-  if (error || !t) { alert("Could not load receipt."); return; }
+  if (error || !t) { w.document.body.innerHTML = "<p>Could not load receipt.</p>"; return; }
+
+  let payerName = window.currentApp?.full_name || "—";
 
   const receiptNo = "RCT-" + t.id.slice(0, 8).toUpperCase();
   const verificationCode = t.id.slice(-6).toUpperCase();
   const logoUrl = new URL("logo.png", location.href).href;
-  const w = window.open("", "_blank");
+  w.document.open();
   w.document.write(`
     <html><head><title>Receipt ${receiptNo}</title>
     <style>
@@ -567,6 +577,7 @@ async function printMyReceipt(transactionId) {
     <h1>Official Receipt</h1>
     <table>
       <tr><td><strong>Receipt Number</strong></td><td>${receiptNo}</td></tr>
+      <tr><td><strong>Paid By</strong></td><td>${payerName}</td></tr>
       <tr><td><strong>Category</strong></td><td>${t.category}</td></tr>
       <tr><td><strong>Payment Method</strong></td><td>${t.payment_method || "—"}</td></tr>
       <tr><td><strong>Amount Paid</strong></td><td>UGX ${Number(t.amount).toLocaleString()}</td></tr>
