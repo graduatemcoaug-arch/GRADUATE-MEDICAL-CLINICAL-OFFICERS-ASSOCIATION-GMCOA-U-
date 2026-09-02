@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("gallery-form").addEventListener("submit", uploadGalleryPhoto);
   document.getElementById("leadership-form").addEventListener("submit", saveLeader);
   document.getElementById("leadership-cancel-edit").addEventListener("click", resetLeadershipForm);
+  document.getElementById("announcement-form").addEventListener("submit", postAnnouncement);
+  document.getElementById("committee-member-form").addEventListener("submit", addCommitteeMember);
 
   document.querySelectorAll("#sec-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -50,6 +52,7 @@ function showDashboard() {
   loadAdminThreads();
   loadGallery();
   loadLeadershipAdmin();
+  loadAnnouncementsAdmin();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -146,6 +149,7 @@ async function loadCommittees() {
   if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
 
   select.innerHTML = (data || []).map((c) => `<option value="${c.id}">${escapeHtmlSt(c.name)}</option>`).join("");
+  document.getElementById("committee-member-select").innerHTML = select.innerHTML;
 
   const cards = [];
   for (const c of data || []) {
@@ -450,6 +454,62 @@ function editLeader(p) {
   document.getElementById("leadership-form-title").textContent = "Edit Leader";
   document.getElementById("leadership-cancel-edit").style.display = "inline-block";
   form.scrollIntoView({ behavior: "smooth" });
+}
+
+/* ---------------- ANNOUNCEMENTS ---------------- */
+
+async function postAnnouncement(e) {
+  e.preventDefault();
+  const form = e.target;
+  const payload = {
+    title: form.title.value.trim(),
+    body: form.body.value.trim(),
+    audience: form.audience.value,
+  };
+  const { error } = await supabaseClient.from("announcements").insert(payload);
+  if (error) { alert("Failed: " + error.message); return; }
+  form.reset();
+  loadAnnouncementsAdmin();
+}
+
+async function loadAnnouncementsAdmin() {
+  const list = document.getElementById("announcements-admin-list");
+  const { data, error } = await supabaseClient.from("announcements").select("*").order("created_at", { ascending: false });
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No announcements posted yet.</p>`; return; }
+
+  list.innerHTML = data.map((a) => `
+    <div class="dir-row">
+      <div>
+        <div class="dir-name">${escapeHtmlSt(a.title)}</div>
+        <div class="dir-meta">${escapeHtmlSt(a.audience)} · ${new Date(a.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+      </div>
+      <button class="delete-entry-btn" onclick="deleteAnnouncement('${a.id}')">Delete</button>
+    </div>`).join("");
+}
+
+async function deleteAnnouncement(id) {
+  if (!confirm("Delete this announcement?")) return;
+  const { error } = await supabaseClient.from("announcements").delete().eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadAnnouncementsAdmin();
+}
+
+/* ---------------- COMMITTEE MEMBERS ---------------- */
+
+async function addCommitteeMember(e) {
+  e.preventDefault();
+  const form = e.target;
+  const payload = {
+    committee_id: form.committee_id.value,
+    member_name: form.member_name.value.trim(),
+    member_email: form.member_email.value.trim() || null,
+    role: form.role.value.trim() || null,
+  };
+  const { error } = await supabaseClient.from("committee_members").insert(payload);
+  if (error) { alert("Failed: " + error.message); return; }
+  form.reset();
+  alert("Committee member added.");
 }
 
 function escapeHtmlSt(str) {
