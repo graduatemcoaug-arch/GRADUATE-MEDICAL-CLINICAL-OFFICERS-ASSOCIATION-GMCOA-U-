@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadNews();
   loadEvents();
   loadLeadership();
+  loadPresidentWelcome();
   wireNavToggle();
   wireNewsletterForm();
 });
@@ -141,9 +142,38 @@ async function loadLeadership() {
         <div class="leader-position">${escapeHtml(p.position)}</div>
         ${p.qualifications ? `<div class="leader-quals">${escapeHtml(p.qualifications)}</div>` : ""}
         ${p.bio ? `<p class="leader-bio">${escapeHtml(p.bio)}</p>` : ""}
+        ${p.phone ? `<p class="leader-bio">📞 ${escapeHtml(p.phone)}</p>` : ""}
       </div>`
     )
     .join("");
+}
+
+async function loadPresidentWelcome() {
+  const photoEl = document.querySelector(".president-photo");
+  const quoteEl = document.querySelector(".president blockquote");
+  if (!photoEl || !quoteEl) return;
+
+  const { data, error } = await supabaseClient
+    .from("leadership")
+    .select("full_name,photo_url,welcome_message")
+    .ilike("position", "%President%")
+    .not("position", "ilike", "%Vice%")
+    .eq("is_active", true)
+    .order("display_order")
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return;
+
+  if (data.photo_url) {
+    photoEl.style.backgroundImage = `url('${data.photo_url}')`;
+    photoEl.style.backgroundSize = "cover";
+    photoEl.style.backgroundPosition = "center";
+  }
+
+  if (data.welcome_message) {
+    quoteEl.innerHTML = `"${escapeHtml(data.welcome_message)}"<cite>— ${escapeHtml(data.full_name)}, President, GMCOA-U</cite>`;
+  }
 }
 
 function wireNewsletterForm() {
