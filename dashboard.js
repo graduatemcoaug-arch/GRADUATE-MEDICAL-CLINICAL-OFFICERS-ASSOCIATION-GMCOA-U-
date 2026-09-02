@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
   document.getElementById("logout-btn").addEventListener("click", logout);
+  document.getElementById("invoice-form").addEventListener("submit", generateInvoice);
 });
 
 async function logout() {
@@ -16,6 +17,7 @@ async function loadDashboard() {
   }
 
   const email = session.user.email;
+  window.currentEmail = email;
   document.getElementById("welcome-email").textContent = email;
 
   const { data: app, error: appError } = await supabaseClient
@@ -23,6 +25,8 @@ async function loadDashboard() {
     .select("full_name,membership_category,membership_number,status,district_of_residence,region,employer")
     .eq("email", email)
     .maybeSingle();
+
+  window.currentApp = app;
 
   if (appError) {
     console.error("Failed to load profile:", appError);
@@ -44,8 +48,11 @@ async function loadDashboard() {
   loadMyResearchSummary(email);
   loadMyCommittees(email);
   loadAnnouncements();
+  loadMyInvoices(email);
   if (app && app.membership_number) {
     loadElectionEligibility(app.membership_category, app.membership_number);
+    loadMyCard(app, email);
+    loadFullPaymentHistory(app.membership_number);
   } else {
     document.getElementById("election-eligibility").innerHTML = `<p class="dash-empty-note">Not eligible — no approved membership on file yet.</p>`;
   }
@@ -285,6 +292,185 @@ async function loadAnnouncements() {
       </div>
       <p style="margin:6px 0 0;font-size:0.86rem;color:var(--text-muted);">${escapeHtmlD(a.body)}</p>
     </div>`).join("");
+}
+
+async function loadMyCard(app, email) {
+  const section = document.getElementById("my-card-section");
+  const container = document.getElementById("my-card-container");
+  section.style.display = "block";
+
+  const { data: member } = await supabaseClient
+    .from("member_directory")
+    .select("status,valid_until")
+    .eq("membership_number", app.membership_number)
+    .maybeSingle();
+
+  const verifyUrl = `${location.origin}${location.pathname.replace("dashboard.html", "verify.html")}?number=${encodeURIComponent(app.membership_number)}`;
+
+  container.innerHTML = `
+    <div class="membership-card" id="member-card">
+      <div class="mc-header">
+        <img src="logo.png" alt="GMCOA-U">
+        <div>
+          <div class="mc-org">GMCOA-U</div>
+          <div class="mc-sub">OFFICIAL MEMBERSHIP CARD</div>
+        </div>
+      </div>
+      <div class="mc-name">${escapeHtmlD(app.full_name)}</div>
+      <div class="mc-number">${escapeHtmlD(app.membership_number)}</div>
+      <div class="mc-grid">
+        <div><div class="mc-label">Category</div><div class="mc-value">${escapeHtmlD(app.membership_category)}</div></div>
+        <div><div class="mc-label">Valid Until</div><div class="mc-value">${member?.valid_until ? new Date(member.valid_until).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</div></div>
+        <div><div class="mc-label">District</div><div class="mc-value">${escapeHtmlD(app.district_of_residence || "—")}</div></div>
+        <div><div class="mc-label">Region</div><div class="mc-value">${escapeHtmlD(app.region || "—")}</div></div>
+      </div>
+      <div class="mc-footer">
+        <span class="mc-status-badge">${escapeHtmlD(member?.status || app.status)}</span>
+        <div class="mc-qr" id="dash-qr-holder"></div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+    </div>`;
+
+  new QRCode(document.getElementById("dash-qr-holder"), {
+    text: verifyUrl,
+    width: 64,
+    height: 64,
+  });
+}
+
+async function loadFullPaymentHistory(membershipNumber) {
+  const list = document.getElementById("full-payments-list");
+
+  const { data, error } = await supabaseClient
+    .from("finance_transactions")
+    .select("amount,transaction_date,category,payment_method")
+    .eq("membership_number", membershipNumber)
+    .order("transaction_date", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load payment history:", error);
+    list.innerHTML = `<p class="dash-empty-note">Something went wrong loading your payment history.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    document.getElementById("payments-total").textContent = "UGX 0";
+    list.innerHTML = `<p class="dash-empty-note">No payments recorded yet.</p>`;
+    return;
+  }
+
+  const total = data.reduce((sum, t) => sum + Number(t.amount), 0);
+  document.getElementById("payments-total").textContent = `UGX ${total.toLocaleString()}`;
+
+  list.innerHTML = data.map((t) => `
+    <div class="dash-row">
+      <span class="dr-label">${new Date(t.transaction_date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })} — ${escapeHtmlD(t.category)}</span>
+      <span class="dr-value">UGX ${Number(t.amount).toLocaleString()} · ${escapeHtmlD(t.payment_method || "")}</span>
+    </div>`).join("");
+}
+
+function generateInvoiceNumber() {
+  const year = new Date().getFullYear();
+  const rand = Math.floor(100000 + Math.random() * 900000);
+  return `INV-${year}-${rand}`;
+}
+
+async function generateInvoice(e) {
+  e.preventDefault();
+  const form = e.target;
+  const app = window.currentApp;
+  const email = window.currentEmail;
+
+  const payload = {
+    invoice_number: generateInvoiceNumber(),
+    member_email: email,
+    member_name: app?.full_name || email,
+    membership_number: app?.membership_number || null,
+    payment_type: form.payment_type.value,
+    reference_note: form.reference_note.value.trim() || form.payment_type.value,
+    amount: parseFloat(form.amount.value),
+  };
+
+  const { data: invoice, error } = await supabaseClient.from("payment_invoices").insert(payload).select().single();
+
+  if (error) {
+    document.getElementById("invoice-output").innerHTML = `<p class="dash-empty-note">Failed to generate invoice: ${escapeHtmlD(error.message)}</p>`;
+    return;
+  }
+
+  form.reset();
+  renderInvoicePreview(invoice);
+  loadMyInvoices(email);
+}
+
+function renderInvoicePreview(inv) {
+  document.getElementById("invoice-output").innerHTML = `
+    <div class="cert-preview" style="max-width:420px;padding:26px 22px;">
+      <div class="cert-org">GMCOA-U Payment Invoice</div>
+      <h2 style="font-size:1.1rem;">${escapeHtmlD(inv.invoice_number)}</h2>
+      <div style="text-align:left;margin-top:14px;font-size:0.88rem;">
+        <div class="dash-row"><span class="dr-label">Type</span><span class="dr-value">${escapeHtmlD(inv.payment_type)}</span></div>
+        <div class="dash-row"><span class="dr-label">Details</span><span class="dr-value">${escapeHtmlD(inv.reference_note || "—")}</span></div>
+        <div class="dash-row"><span class="dr-label">Amount</span><span class="dr-value">UGX ${Number(inv.amount).toLocaleString()}</span></div>
+        <div class="dash-row"><span class="dr-label">Status</span><span class="dr-value">${escapeHtmlD(inv.status)}</span></div>
+        <div class="dash-row"><span class="dr-label">Date</span><span class="dr-value">${new Date(inv.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</span></div>
+      </div>
+    </div>
+    <div class="card-actions"><button class="btn btn-primary" onclick="window.print()">Print Invoice</button></div>`;
+}
+
+async function loadMyInvoices(email) {
+  const list = document.getElementById("my-invoices-list");
+  const { data, error } = await supabaseClient
+    .from("payment_invoices")
+    .select("*")
+    .eq("member_email", email)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load invoices:", error);
+    list.innerHTML = `<p class="dash-empty-note">Something went wrong.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = `<p class="dash-empty-note">No invoices yet — generate one above.</p>`;
+    return;
+  }
+
+  list.innerHTML = data.map((inv) => `
+    <div class="dash-row">
+      <span class="dr-label">${escapeHtmlD(inv.invoice_number)} — ${escapeHtmlD(inv.payment_type)}</span>
+      <span class="dr-value">UGX ${Number(inv.amount).toLocaleString()} · <span class="status-pill ${inv.status.toLowerCase()}">${escapeHtmlD(inv.status)}</span>${inv.status === "Paid" && inv.finance_transaction_id ? ` · <button class="delete-entry-btn" style="color:var(--deep-blue);" onclick="printMyReceipt('${inv.finance_transaction_id}')">Print Receipt</button>` : ""}</span>
+    </div>`).join("");
+}
+
+async function printMyReceipt(transactionId) {
+  const { data: t, error } = await supabaseClient.from("finance_transactions").select("*").eq("id", transactionId).single();
+  if (error || !t) { alert("Could not load receipt."); return; }
+
+  const receiptNo = "RCT-" + t.id.slice(0, 8).toUpperCase();
+  const verificationCode = t.id.slice(-6).toUpperCase();
+  const w = window.open("", "_blank");
+  w.document.write(`
+    <html><head><title>Receipt ${receiptNo}</title>
+    <style>body{font-family:sans-serif;padding:40px;color:#17242E;} h1{color:#0B3D62;} table{width:100%;border-collapse:collapse;margin-top:20px;} td{padding:8px 0;border-bottom:1px solid #E1E8EC;}</style>
+    </head><body>
+    <h1>GMCOA-U Official Receipt</h1>
+    <table>
+      <tr><td><strong>Receipt Number</strong></td><td>${receiptNo}</td></tr>
+      <tr><td><strong>Category</strong></td><td>${t.category}</td></tr>
+      <tr><td><strong>Payment Method</strong></td><td>${t.payment_method || "—"}</td></tr>
+      <tr><td><strong>Amount Paid</strong></td><td>UGX ${Number(t.amount).toLocaleString()}</td></tr>
+      <tr><td><strong>Date</strong></td><td>${new Date(t.transaction_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</td></tr>
+      <tr><td><strong>Digital Verification Code</strong></td><td>${verificationCode}</td></tr>
+    </table>
+    <p style="margin-top:30px;color:#55666F;font-size:0.85rem;">Graduate Medical Clinical Officers Association of Uganda</p>
+    <script>window.print();</script>
+    </body></html>`);
+  w.document.close();
 }
 
 function escapeHtmlD(str) {
