@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("goal-form").addEventListener("submit", addGoal);
   document.getElementById("admin-back-to-threads").addEventListener("click", showAdminThreadList);
   document.getElementById("admin-reply-form").addEventListener("submit", sendAdminReply);
+  document.getElementById("gallery-form").addEventListener("submit", uploadGalleryPhoto);
 
   document.querySelectorAll("#sec-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -45,6 +46,7 @@ function showDashboard() {
   loadCommittees();
   loadGoals();
   loadAdminThreads();
+  loadGallery();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -264,6 +266,81 @@ async function sendAdminReply(e) {
   if (error) { alert("Failed: " + error.message); return; }
   form.reset();
   loadAdminMessages();
+}
+
+/* ---------------- PHOTO GALLERY ---------------- */
+
+async function uploadGalleryPhoto(e) {
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById("gallery-upload-status");
+  const file = form.photo.files[0];
+  if (!file) return;
+
+  status.textContent = "Uploading…";
+  status.style.color = "var(--text-muted)";
+
+  const path = `${Date.now()}-${file.name}`;
+  const { error: uploadError } = await supabaseClient.storage.from("media-photos").upload(path, file);
+
+  if (uploadError) {
+    status.textContent = "Upload failed: " + uploadError.message;
+    status.style.color = "#B3261E";
+    return;
+  }
+
+  const { data: urlData } = supabaseClient.storage.from("media-photos").getPublicUrl(path);
+
+  const { error } = await supabaseClient.from("media_items").insert({
+    title: form.title.value.trim(),
+    description: form.description.value.trim() || null,
+    media_type: form.media_type.value,
+    thumbnail_url: urlData.publicUrl,
+    published_date: form.published_date.value || new Date().toISOString().slice(0, 10),
+    is_published: true,
+  });
+
+  if (error) {
+    status.textContent = "Failed to save: " + error.message;
+    status.style.color = "#B3261E";
+    return;
+  }
+
+  status.textContent = "Uploaded!";
+  status.style.color = "var(--green)";
+  form.reset();
+  loadGallery();
+}
+
+async function loadGallery() {
+  const list = document.getElementById("gallery-list");
+  const { data, error } = await supabaseClient
+    .from("media_items")
+    .select("*")
+    .in("media_type", ["Photo Gallery", "Conference Highlight"])
+    .order("published_date", { ascending: false });
+
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No photos uploaded yet.</p>`; return; }
+
+  list.innerHTML = data.map((m) => `
+    <div class="dir-row">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:8px;background-image:url('${m.thumbnail_url}');background-size:cover;background-position:center;flex-shrink:0;"></div>
+        <div>
+          <div class="dir-name">${escapeHtmlSt(m.title)}</div>
+          <div class="dir-meta">${escapeHtmlSt(m.media_type)} · ${m.published_date ? new Date(m.published_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}</div>
+        </div>
+      </div>
+      <button class="delete-entry-btn" onclick="deleteGalleryPhoto('${m.id}')">Delete</button>
+    </div>`).join("");
+}
+
+async function deleteGalleryPhoto(id) {
+  if (!confirm("Delete this photo?")) return;
+  const { error } = await supabaseClient.from("media_items").delete().eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadGallery();
 }
 
 function escapeHtmlSt(str) {
