@@ -42,6 +42,13 @@ async function loadDashboard() {
   loadCpd(email);
   loadMyEvents(email);
   loadMyResearchSummary(email);
+  loadMyCommittees(email);
+  loadAnnouncements();
+  if (app && app.membership_number) {
+    loadElectionEligibility(app.membership_category, app.membership_number);
+  } else {
+    document.getElementById("election-eligibility").innerHTML = `<p class="dash-empty-note">Not eligible — no approved membership on file yet.</p>`;
+  }
 }
 
 async function loadSubscriptionStatus(membershipNumber) {
@@ -206,6 +213,78 @@ async function loadMyResearchSummary(email) {
       <span class="dr-label">${escapeHtmlD(r.title)}</span>
       <span class="dr-value">${escapeHtmlD(r.status)}</span>
     </div>`).join("") + `<p class="dash-empty-note" style="margin-top:10px;"><a href="my-research.html">Manage all projects →</a></p>`;
+}
+
+async function loadMyCommittees(email) {
+  const box = document.getElementById("my-committees-list");
+  const { data, error } = await supabaseClient
+    .from("committee_members")
+    .select("role, committees(name)")
+    .eq("member_email", email);
+
+  if (error) {
+    console.error("Failed to load committee memberships:", error);
+    box.innerHTML = `<p class="dash-empty-note">Something went wrong.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.innerHTML = `<p class="dash-empty-note">Not currently on any Standing Committee.</p>`;
+    return;
+  }
+
+  box.innerHTML = data.map((c) => `
+    <div class="dash-row">
+      <span class="dr-label">${escapeHtmlD(c.committees?.name || "Committee")}</span>
+      <span class="dr-value">${escapeHtmlD(c.role || "Member")}</span>
+    </div>`).join("");
+}
+
+async function loadElectionEligibility(category, membershipNumber) {
+  const box = document.getElementById("election-eligibility");
+
+  const { data: member } = await supabaseClient
+    .from("member_directory")
+    .select("status")
+    .eq("membership_number", membershipNumber)
+    .maybeSingle();
+
+  const isActive = member?.status === "Active";
+  const isEligibleCategory = category === "Full" || category === "Ordinary" || category === "Honorary";
+  const eligible = isActive && isEligibleCategory;
+
+  box.innerHTML = `
+    <p class="dash-empty-note" style="margin-bottom:8px;">${eligible ? "✅ You currently meet the basic criteria to stand for or vote in elections." : "❌ You don't currently meet the basic criteria."}</p>
+    <p class="dash-empty-note" style="font-size:0.78rem;">Based on active status and membership category. Per Article 9.1, candidates for Executive office also need at least two consecutive years of good standing — this isn't tracked automatically here, so check with the Secretariat to confirm full eligibility.</p>`;
+}
+
+async function loadAnnouncements() {
+  const box = document.getElementById("announcements-list");
+  const { data, error } = await supabaseClient
+    .from("announcements")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error("Failed to load announcements:", error);
+    box.innerHTML = `<p class="dash-empty-note">Something went wrong.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.innerHTML = `<p class="dash-empty-note">No announcements right now.</p>`;
+    return;
+  }
+
+  box.innerHTML = data.map((a) => `
+    <div class="dash-row" style="display:block;">
+      <div style="display:flex;justify-content:space-between;">
+        <span class="dr-label" style="font-weight:700;">${escapeHtmlD(a.title)}</span>
+        <span class="dr-value" style="font-size:0.78rem;">${new Date(a.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+      </div>
+      <p style="margin:6px 0 0;font-size:0.86rem;color:var(--text-muted);">${escapeHtmlD(a.body)}</p>
+    </div>`).join("");
 }
 
 function escapeHtmlD(str) {
