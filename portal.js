@@ -3,7 +3,41 @@ document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
   document.getElementById("login-form").addEventListener("submit", login);
   document.getElementById("signup-form").addEventListener("submit", signup);
+  document.getElementById("forgot-password-link").addEventListener("click", showResetForm);
+  document.getElementById("reset-form").addEventListener("submit", sendResetLink);
+  document.getElementById("reset-cancel").addEventListener("click", hideResetForm);
 });
+
+function showResetForm(e) {
+  e.preventDefault();
+  document.getElementById("login-form").style.display = "none";
+  document.getElementById("reset-form").style.display = "block";
+}
+
+function hideResetForm() {
+  document.getElementById("reset-form").style.display = "none";
+  document.getElementById("login-form").style.display = "block";
+}
+
+async function sendResetLink(e) {
+  e.preventDefault();
+  const email = document.getElementById("reset-email").value.trim();
+  const note = document.getElementById("portal-note");
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: `${location.origin}${location.pathname.replace("portal.html", "reset-password.html")}`,
+  });
+
+  if (error) {
+    note.textContent = "Failed to send reset link: " + error.message;
+    note.style.color = "#B3261E";
+    return;
+  }
+
+  note.textContent = "If an account exists with that email, a reset link has been sent.";
+  note.style.color = "var(--green)";
+  hideResetForm();
+}
 
 async function checkExistingSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -56,6 +90,6 @@ async function signup(e) {
     return;
   }
 
-  note.textContent = "Account created! Check your email to confirm, then log in.";
+  note.textContent = "Account created! You can log in now.";
   note.style.color = "var(--green)";
 }
