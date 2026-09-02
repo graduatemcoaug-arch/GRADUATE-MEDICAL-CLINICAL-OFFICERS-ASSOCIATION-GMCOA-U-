@@ -305,6 +305,11 @@ async function loadMyCard(app, email) {
     .eq("membership_number", app.membership_number)
     .maybeSingle();
 
+  if (member?.status === "Pending Payment") {
+    container.innerHTML = `<p class="dash-empty-note">Your membership card will be issued once your subscription payment is confirmed. See "Make a Payment" below to pay.</p>`;
+    return;
+  }
+
   const verifyUrl = `${location.origin}${location.pathname.replace("dashboard.html", "verify.html")}?number=${encodeURIComponent(app.membership_number)}`;
 
   container.innerHTML = `
