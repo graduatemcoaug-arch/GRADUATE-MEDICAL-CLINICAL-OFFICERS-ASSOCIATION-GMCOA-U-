@@ -1189,3 +1189,12 @@ footer.site-footer {
 .msg-bubble.member { background: var(--deep-blue); color: #fff; margin-left: auto; }
 .msg-bubble.secretariat { background: var(--bg-soft); color: var(--text); }
 .msg-meta { font-size: 0.72rem; opacity: .75; margin-top: 4px; }
+
+/* ---------- Password Show/Hide Toggle ---------- */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 60px !important; }
+.pw-toggle-btn {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--deep-blue); font-size: 0.78rem;
+  font-weight: 700; cursor: pointer; padding: 4px 6px;
+}
