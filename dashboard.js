@@ -40,6 +40,8 @@ async function loadDashboard() {
   }
 
   loadCpd(email);
+  loadMyEvents(email);
+  loadMyResearchSummary(email);
 }
 
 async function loadSubscriptionStatus(membershipNumber) {
@@ -152,6 +154,58 @@ async function loadCpd(email) {
           : `Enrolled · <a href="quiz.html?course=${e.course_id}">Take Quiz</a>`}
       </span>
     </div>`).join("");
+}
+
+async function loadMyEvents(email) {
+  const box = document.getElementById("my-events-list");
+  const { data, error } = await supabaseClient
+    .from("event_registrations")
+    .select("event_title, attendance_type, registration_number, registered_at")
+    .eq("email", email)
+    .order("registered_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load event registrations:", error);
+    box.innerHTML = `<p class="dash-empty-note">Something went wrong loading your event registrations.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.innerHTML = `<p class="dash-empty-note">No event registrations yet — browse <a href="events.html">upcoming events</a>.</p>`;
+    return;
+  }
+
+  box.innerHTML = data.map((r) => `
+    <div class="dash-row">
+      <span class="dr-label">${escapeHtmlD(r.event_title)}</span>
+      <span class="dr-value">${escapeHtmlD(r.attendance_type)} · <a href="event-pass.html">View Pass</a></span>
+    </div>`).join("");
+}
+
+async function loadMyResearchSummary(email) {
+  const box = document.getElementById("my-research-summary");
+  const { data, error } = await supabaseClient
+    .from("research_projects")
+    .select("title, status, research_id")
+    .eq("owner_email", email)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load research projects:", error);
+    box.innerHTML = `<p class="dash-empty-note">Something went wrong loading your research projects.</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.innerHTML = `<p class="dash-empty-note">No research projects registered yet — <a href="my-research.html">register one</a>.</p>`;
+    return;
+  }
+
+  box.innerHTML = data.map((r) => `
+    <div class="dash-row">
+      <span class="dr-label">${escapeHtmlD(r.title)}</span>
+      <span class="dr-value">${escapeHtmlD(r.status)}</span>
+    </div>`).join("") + `<p class="dash-empty-note" style="margin-top:10px;"><a href="my-research.html">Manage all projects →</a></p>`;
 }
 
 function escapeHtmlD(str) {
