@@ -78,10 +78,14 @@
 
       <div class="dash-card dash-full">
         <h3>Make a Payment</h3>
-        <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:14px;">
-          Online payment isn't connected yet — pay via Mobile Money to <strong>+256 751 351607 (Dr. Herman Beigana, Treasurer)</strong>, then generate an invoice below with the same amount as your reference. The Treasurer will confirm it, and it'll then show in your Financial Records automatically.
+        <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:10px;">
+          Online payment isn't connected yet — pay using any of the options below, then generate an invoice below with the same amount as your reference. The Treasurer will confirm it, and it'll then show in your Financial Records automatically.
         </p>
-        <form id="invoice-form">
+        <div class="dash-row"><span class="dr-label">Mobile Money (Direct)</span><span class="dr-value">+256 751 351607 (Dr. Herman Beigana, Treasurer)</span></div>
+        <div class="dash-row"><span class="dr-label">Bank Account</span><span class="dr-value">DFCU Bank, A/C 01530019492582 — Nasser Kasadha &amp; Herman Beingana</span></div>
+        <div class="dash-row"><span class="dr-label">Airtel Money → DFCU</span><span class="dr-value">Dial *185*7*1#, select DFCU</span></div>
+        <div class="dash-row"><span class="dr-label">MTN Mobile Money → DFCU</span><span class="dr-value">Dial *165*6*1#, select DFCU</span></div>
+        <form id="invoice-form" style="margin-top:16px;">
           <label>What are you paying for?</label>
           <select name="payment_type" required>
             <option>Membership Subscription</option>
