@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages | GMCOA-U</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="dashboard.html">My Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Secure Messaging</div>
+    <h1>Messages with the Secretariat</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="thread-list-view">
+      <div class="finance-form-box" style="margin-bottom:22px;">
+        <h3>Start a New Conversation</h3>
+        <form id="new-thread-form">
+          <label>Subject</label>
+          <input type="text" name="subject" required>
+          <label>Message</label>
+          <input type="text" name="body" required>
+          <button class="btn btn-primary" type="submit">Send</button>
+        </form>
+      </div>
+      <div id="threads-list"><p class="card-empty">Loading…</p></div>
+    </div>
+
+    <div id="thread-detail-view" style="display:none;">
+      <button class="btn btn-outline" id="back-to-threads" style="color:var(--deep-blue);border-color:var(--deep-blue);margin-bottom:16px;">← Back</button>
+      <h3 id="thread-detail-subject"></h3>
+      <div id="messages-box" style="margin:16px 0;"></div>
+      <form id="reply-form" style="display:flex;gap:10px;">
+        <input type="text" name="body" placeholder="Type a reply…" required style="flex:1;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);">
+        <button class="btn btn-primary" type="submit">Send</button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="messages.js"></script>
+</body>
+</html>
