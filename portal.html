@@ -48,6 +48,15 @@
         <input id="login-password" type="password" required>
         <button class="btn btn-primary" type="submit">Log In</button>
       </form>
+      <p style="margin-top:10px;font-size:0.85rem;"><a href="#" id="forgot-password-link">Forgot your password?</a></p>
+
+      <form id="reset-form" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 4px;">Enter your email and we'll send you a link to reset your password.</p>
+        <label for="reset-email">Email</label>
+        <input id="reset-email" type="email" required>
+        <button class="btn btn-primary" type="submit">Send Reset Link</button>
+        <button class="btn btn-outline" type="button" id="reset-cancel" style="color:var(--deep-blue);border-color:var(--deep-blue);margin-top:8px;">Cancel</button>
+      </form>
 
       <form id="signup-form" style="display:none;">
         <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 4px;">Use the same email you applied with to see your application and membership details.</p>
