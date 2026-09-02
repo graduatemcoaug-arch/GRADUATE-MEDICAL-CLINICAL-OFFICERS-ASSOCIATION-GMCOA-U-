@@ -50,6 +50,7 @@ async function loadNews() {
 
   if (error) {
     console.error("News load failed:", error);
+    grid.innerHTML = `<p class="card-empty">Couldn't load news: ${escapeHtml(error.message)}</p>`;
     return;
   }
 
@@ -85,6 +86,7 @@ async function loadEvents() {
 
   if (error) {
     console.error("Events load failed:", error);
+    list.innerHTML = `<p class="card-empty">Couldn't load events: ${escapeHtml(error.message)}</p>`;
     return;
   }
 
