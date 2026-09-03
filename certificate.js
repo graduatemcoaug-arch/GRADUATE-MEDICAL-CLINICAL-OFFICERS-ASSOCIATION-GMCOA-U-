@@ -80,6 +80,7 @@ async function verifyCertificate(certNumber) {
 function renderCertificate(cert, verifyMode) {
   document.getElementById("cert-body").innerHTML = `
     <div class="cert-preview" id="cert-print">
+      <img src="logo.png" alt="GMCOA-U" style="width:56px;height:56px;margin-bottom:10px;">
       <div class="cert-org">Graduate Medical Clinical Officers Association of Uganda</div>
       <h2>Certificate of ${cert.certificate_type === "CPD Course" ? "Completion" : "Participation"}</h2>
       <p style="color:var(--text-muted);">This certifies that</p>
@@ -90,7 +91,44 @@ function renderCertificate(cert, verifyMode) {
       <p class="cert-num">Certificate No. ${escapeHtmlC(cert.certificate_number)} · Issued ${new Date(cert.issued_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
       <p class="cert-num">Verify at: ${location.origin}${location.pathname}?verify=${cert.certificate_number}</p>
     </div>
-    ${!verifyMode ? `<div class="card-actions"><button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button></div>` : ""}`;
+    ${!verifyMode ? `<div class="card-actions"><button class="btn btn-primary" onclick='printCertificate(${JSON.stringify(cert).replace(/'/g, "&apos;")})'>Print / Save as PDF</button></div>` : ""}`;
+}
+
+function printCertificate(cert) {
+  const logoUrl = new URL("logo.png", location.href).href;
+  const verifyUrl = `${location.origin}${location.pathname}?verify=${cert.certificate_number}`;
+  const w = window.open("", "_blank");
+  w.document.write(`
+    <html><head><title>Certificate ${cert.certificate_number}</title>
+    <style>
+      body{font-family:sans-serif;display:flex;justify-content:center;padding:40px;background:#f5f5f5;}
+      .cert{max-width:480px;width:100%;background:#fff;border:6px solid #C99A2E;border-radius:10px;padding:40px 30px;text-align:center;}
+      .cert img{width:56px;height:56px;margin-bottom:10px;}
+      .org{font-size:0.8rem;color:#C99A2E;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+      .cert h2{color:#0B3D62;margin:14px 0 4px;}
+      .muted{color:#55666F;}
+      .name{font-size:1.5rem;font-weight:800;margin:16px 0;color:#17242E;}
+      .title{font-weight:700;font-size:1.1rem;color:#17242E;}
+      .pts{color:#1D9E75;font-weight:700;}
+      .num{font-size:0.75rem;color:#55666F;margin-top:20px;}
+      @media print { body{background:#fff;padding:0;} }
+    </style>
+    </head><body>
+    <div class="cert">
+      <img src="${logoUrl}" alt="GMCOA-U">
+      <div class="org">Graduate Medical Clinical Officers Association of Uganda</div>
+      <h2>Certificate of ${cert.certificate_type === "CPD Course" ? "Completion" : "Participation"}</h2>
+      <p class="muted">This certifies that</p>
+      <div class="name">${escapeHtmlC(cert.recipient_name)}</div>
+      <p class="muted">has successfully ${cert.certificate_type === "CPD Course" ? "completed" : "participated in"}</p>
+      <p class="title">${escapeHtmlC(cert.reference_title)}</p>
+      ${cert.cpd_points ? `<p class="pts">${cert.cpd_points} CPD Points Awarded</p>` : ""}
+      <p class="num">Certificate No. ${escapeHtmlC(cert.certificate_number)} &middot; Issued ${new Date(cert.issued_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+      <p class="num">Verify at: ${verifyUrl}</p>
+    </div>
+    <script>setTimeout(() => window.print(), 300);<\/script>
+    </body></html>`);
+  w.document.close();
 }
 
 function escapeHtmlC(str) {
