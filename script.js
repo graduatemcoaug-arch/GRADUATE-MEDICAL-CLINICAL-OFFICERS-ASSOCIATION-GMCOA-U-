@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadEvents();
   loadLeadership();
   loadPresidentWelcome();
+  loadGalleryPreview();
   wireNavToggle();
   wireNewsletterForm();
 });
@@ -194,6 +195,41 @@ async function loadPresidentWelcome() {
   if (data.welcome_message) {
     quoteEl.innerHTML = `"${escapeHtml(data.welcome_message)}"<cite>— ${escapeHtml(data.full_name)}, President, GMCOA-U</cite>`;
   }
+}
+
+async function loadGalleryPreview() {
+  const grid = document.getElementById("gallery-preview-grid");
+  if (!grid) return;
+
+  const { data, error } = await supabaseClient
+    .from("media_items")
+    .select("title,thumbnail_url")
+    .in("media_type", ["Photo Gallery", "Conference Highlight"])
+    .eq("is_published", true)
+    .order("published_date", { ascending: false })
+    .limit(6);
+
+  if (error) {
+    console.error("Gallery preview load failed:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    grid.innerHTML = `<p class="card-empty">No photos uploaded yet — check back soon.</p>`;
+    return;
+  }
+
+  grid.innerHTML = data
+    .map(
+      (m) => `
+      <a href="media.html" class="card" style="text-decoration:none;">
+        <div class="card-media" style="${m.thumbnail_url ? `background-image:url('${m.thumbnail_url}');background-size:cover;background-position:center;` : ""}"></div>
+        <div class="card-body">
+          <h3 style="font-size:0.9rem;color:var(--text);">${escapeHtml(m.title)}</h3>
+        </div>
+      </a>`
+    )
+    .join("");
 }
 
 function wireNewsletterForm() {
