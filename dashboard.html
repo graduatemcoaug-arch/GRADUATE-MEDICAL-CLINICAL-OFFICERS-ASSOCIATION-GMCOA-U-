@@ -130,6 +130,26 @@
       </div>
 
       <div class="dash-card dash-full">
+        <h3>Claim External CPD Points</h3>
+        <p style="color:var(--text-muted);font-size:0.86rem;margin-bottom:12px;">Attended a conference or training outside GMCOA-U? Submit it here for the Secretariat to review and add to your CPD total.</p>
+        <form id="external-cpd-form">
+          <label>Activity Title</label>
+          <input type="text" name="activity_title" required>
+          <label>Organized By</label>
+          <input type="text" name="provider">
+          <label>Activity Date</label>
+          <input type="date" name="activity_date">
+          <label>CPD Points Claimed</label>
+          <input type="number" name="cpd_points_claimed" min="1" required>
+          <label>Proof Document Link <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+          <input type="url" name="proof_document_link">
+          <button class="btn btn-primary" type="submit">Submit for Review</button>
+        </form>
+        <p id="external-cpd-status" style="margin-top:10px;font-size:0.86rem;"></p>
+        <div id="my-external-cpd-list" style="margin-top:14px;"></div>
+      </div>
+
+      <div class="dash-card dash-full">
         <h3>My Event Registrations</h3>
         <div id="my-events-list"><p class="dash-empty-note">Loading…</p></div>
       </div>
