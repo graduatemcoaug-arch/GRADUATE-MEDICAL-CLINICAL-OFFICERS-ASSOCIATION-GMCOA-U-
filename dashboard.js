@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadDashboard();
   document.getElementById("logout-btn").addEventListener("click", logout);
   document.getElementById("invoice-form").addEventListener("submit", generateInvoice);
+  document.getElementById("external-cpd-form").addEventListener("submit", submitExternalCpd);
 });
 
 async function logout() {
@@ -49,6 +50,7 @@ async function loadDashboard() {
   loadMyCommittees(email);
   loadAnnouncements();
   loadMyInvoices(email);
+  loadMyExternalCpd(email);
   if (app && app.membership_number) {
     loadElectionEligibility(app.membership_category, app.membership_number);
     loadMyCard(app, email);
@@ -593,6 +595,54 @@ async function printMyReceipt(transactionId) {
     <script>window.print();</script>
     </body></html>`);
   w.document.close();
+}
+
+async function submitExternalCpd(e) {
+  e.preventDefault();
+  const form = e.target;
+  const app = window.currentApp;
+  const email = window.currentEmail;
+  const status = document.getElementById("external-cpd-status");
+
+  const payload = {
+    member_email: email,
+    member_name: app?.full_name || email,
+    activity_title: form.activity_title.value.trim(),
+    provider: form.provider.value.trim() || null,
+    activity_date: form.activity_date.value || null,
+    cpd_points_claimed: parseInt(form.cpd_points_claimed.value, 10),
+    proof_document_link: form.proof_document_link.value.trim() || null,
+  };
+
+  const { error } = await supabaseClient.from("external_cpd_submissions").insert(payload);
+
+  if (error) {
+    status.textContent = "Failed to submit: " + error.message;
+    status.style.color = "#B3261E";
+    return;
+  }
+
+  status.textContent = "Submitted for review!";
+  status.style.color = "var(--green)";
+  form.reset();
+  loadMyExternalCpd(email);
+}
+
+async function loadMyExternalCpd(email) {
+  const box = document.getElementById("my-external-cpd-list");
+  const { data, error } = await supabaseClient
+    .from("external_cpd_submissions")
+    .select("activity_title,cpd_points_claimed,status")
+    .eq("member_email", email)
+    .order("created_at", { ascending: false });
+
+  if (error || !data || data.length === 0) { box.innerHTML = ""; return; }
+
+  box.innerHTML = data.map((s) => `
+    <div class="dash-row">
+      <span class="dr-label">${escapeHtmlD(s.activity_title)}</span>
+      <span class="dr-value">${s.cpd_points_claimed} pts · <span class="status-pill ${s.status.toLowerCase()}">${escapeHtmlD(s.status)}</span></span>
+    </div>`).join("");
 }
 
 function escapeHtmlD(str) {
