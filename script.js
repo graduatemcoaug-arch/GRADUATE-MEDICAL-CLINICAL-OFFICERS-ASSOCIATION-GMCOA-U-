@@ -28,6 +28,26 @@ async function loadStats() {
     return;
   }
 
+  // Auto-calculate real counts for these two stats from member_directory,
+  // overriding whatever's manually stored in site_stats for them.
+  // Counts everyone registered (any status), not just those who've paid,
+  // since "Registered Members" means approved & added to the directory.
+  const { count: memberCount } = await supabaseClient
+    .from("member_directory")
+    .select("*", { count: "exact", head: true });
+
+  const { data: districtRows } = await supabaseClient
+    .from("member_directory")
+    .select("district")
+    .not("district", "is", null);
+
+  const districtCount = districtRows ? new Set(districtRows.map((r) => r.district)).size : null;
+
+  data.forEach((s) => {
+    if (s.key === "total_members" && memberCount !== null) s.value = memberCount;
+    if (s.key === "districts" && districtCount !== null) s.value = districtCount;
+  });
+
   grid.innerHTML = data
     .map(
       (s) => `
