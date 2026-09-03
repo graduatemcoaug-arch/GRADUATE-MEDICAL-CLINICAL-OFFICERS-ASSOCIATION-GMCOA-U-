@@ -56,6 +56,41 @@
     <div id="admin-dashboard" style="display:none;">
 
       <div class="section-head">
+        <div class="section-eyebrow">Manage Events</div>
+        <h2>Create / Edit Event</h2>
+      </div>
+      <div class="finance-form-box" style="margin-bottom:22px;">
+        <h3 id="event-form-title">Add a New Event</h3>
+        <form id="event-form">
+          <input type="hidden" name="id">
+          <label>Title</label>
+          <input type="text" name="title" required>
+          <label>Type</label>
+          <input type="text" name="event_type" placeholder="e.g. Annual Conference, CPD Workshop, Webinar">
+          <label>Description</label>
+          <textarea name="description" rows="4" style="width:100%;padding:11px 13px;border-radius:var(--radius);border:1.5px solid var(--border);font-size:0.9rem;font-family:inherit;"></textarea>
+          <label>Start Date &amp; Time</label>
+          <input type="datetime-local" name="start_time" required>
+          <label>End Date &amp; Time</label>
+          <input type="datetime-local" name="end_time">
+          <label>Location</label>
+          <input type="text" name="location" placeholder="e.g. Kampala Serena Hotel">
+          <label style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+            <input type="checkbox" name="is_virtual" style="width:auto;">
+            This is a virtual event
+          </label>
+          <label>Photo</label>
+          <input type="file" name="photo" accept="image/*">
+          <label>External Registration Link <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+          <input type="url" name="registration_url">
+          <button class="btn btn-primary" type="submit" style="margin-top:12px;">Save Event</button>
+          <button class="btn btn-outline" type="button" id="event-cancel-edit" style="display:none;color:var(--deep-blue);border-color:var(--deep-blue);margin-top:8px;">Cancel Edit</button>
+        </form>
+        <p id="event-form-status" style="margin-top:10px;font-size:0.86rem;"></p>
+      </div>
+      <div id="all-events-list" style="margin-bottom:30px;"><p class="card-empty">Loading…</p></div>
+
+      <div class="section-head">
         <div class="section-eyebrow">Virtual Meeting Links</div>
         <h2>Zoom / Google Meet / Teams</h2>
       </div>
