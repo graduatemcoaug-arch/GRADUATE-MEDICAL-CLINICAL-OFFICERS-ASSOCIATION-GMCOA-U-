@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /finance.html
+Disallow: /governance.html
+Disallow: /comms.html
+Disallow: /directory.html
+Disallow: /election-admin.html
+Disallow: /events-admin.html
+Disallow: /agm-admin.html
+Disallow: /secretariat.html
+Disallow: /dashboard.html
+Disallow: /portal.html
+Disallow: /messages.html
+Disallow: /my-card.html
+Disallow: /my-payments.html
+Disallow: /portfolio.html
+Disallow: /my-research.html
+Disallow: /check-status.html
+Disallow: /apply.html
+
+Sitemap: https://gmcoa-ug.org/sitemap.xml
