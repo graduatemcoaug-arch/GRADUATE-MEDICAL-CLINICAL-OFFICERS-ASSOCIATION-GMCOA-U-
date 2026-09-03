@@ -211,6 +211,7 @@ async function loadGalleryPreview() {
 
   if (error) {
     console.error("Gallery preview load failed:", error);
+    grid.innerHTML = `<p class="card-empty">Couldn't load photos: ${escapeHtml(error.message)}</p>`;
     return;
   }
 
