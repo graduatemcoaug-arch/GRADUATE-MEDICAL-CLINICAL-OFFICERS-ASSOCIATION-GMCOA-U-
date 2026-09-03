@@ -1198,3 +1198,12 @@ footer.site-footer {
   background: none; border: none; color: var(--deep-blue); font-size: 0.78rem;
   font-weight: 700; cursor: pointer; padding: 4px 6px;
 }
+
+/* ---------- CPD Management ---------- */
+.cpd-course-row {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 18px; margin-bottom: 10px;
+}
+.cpd-course-row h4 { margin: 0 0 4px; font-size: 0.95rem; }
+.cpd-course-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
+.cpd-course-actions { display: flex; gap: 8px; flex-wrap: wrap; }
