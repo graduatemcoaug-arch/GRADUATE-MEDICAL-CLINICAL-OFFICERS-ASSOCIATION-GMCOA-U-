@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install the GMCOA-U App | GMCOA-U</title>
+<meta name="description" content="Install the GMCOA-U app on your phone for quick access to your membership, CPD, and more.">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B3D62">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html">Home</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Get the App</div>
+    <h1>Install GMCOA-U on Your Phone</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p style="max-width:60ch;color:var(--text-muted);margin-bottom:26px;">
+      Add GMCOA-U to your home screen for quick, app-like access — no app store needed. Follow the steps for your phone below.
+    </p>
+
+    <div class="dash-grid">
+
+      <div class="dash-card">
+        <h3>📱 Android (Chrome)</h3>
+        <button class="btn btn-primary" id="android-install-btn" style="display:none;margin-bottom:12px;">Install App Now</button>
+        <p id="android-success-note" style="display:none;color:var(--green);font-weight:600;">✅ Installed! Find GMCOA-U on your home screen.</p>
+        <div id="android-manual-note">
+          <p style="font-size:0.9rem;color:var(--text-muted);">If the button above doesn't appear, install manually:</p>
+          <ol style="font-size:0.9rem;color:var(--text-muted);padding-left:20px;">
+            <li>Tap the <strong>⋮ menu</strong> (top-right corner of Chrome)</li>
+            <li>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></li>
+            <li>Tap <strong>"Add"</strong> or <strong>"Install"</strong> to confirm</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <h3>🍎 iPhone (Safari)</h3>
+        <p style="font-size:0.9rem;color:var(--text-muted);">iPhone doesn't support one-tap install — follow these steps in Safari:</p>
+        <ol style="font-size:0.9rem;color:var(--text-muted);padding-left:20px;">
+          <li>Tap the <strong>Share icon</strong> (square with an arrow, at the bottom of the screen)</li>
+          <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+          <li>Tap <strong>"Add"</strong> in the top-right corner</li>
+        </ol>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:10px;">Note: this only works in Safari, not Chrome, on iPhone.</p>
+      </div>
+
+    </div>
+
+    <div class="coming-soon-card" style="margin-top:24px;">
+      Once installed, GMCOA-U appears as an app icon on your home screen — no browser address bar, faster loading, and works even with a weak connection.
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="install.js"></script>
+</body>
+</html>
