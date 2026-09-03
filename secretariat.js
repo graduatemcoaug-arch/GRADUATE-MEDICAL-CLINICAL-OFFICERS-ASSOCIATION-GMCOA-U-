@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("course-form").addEventListener("submit", saveCourse);
   document.getElementById("course-cancel-edit").addEventListener("click", resetCourseForm);
   document.getElementById("external-status-filter").addEventListener("change", loadExternalCpd);
+  document.getElementById("news-form").addEventListener("submit", saveNews);
+  document.getElementById("news-cancel-edit").addEventListener("click", resetNewsForm);
 
   document.querySelectorAll("#cpd-subtabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchCpdSubtab(btn.dataset.subtab));
@@ -68,6 +70,7 @@ function showDashboard() {
   loadCoursesAdmin();
   loadExternalCpd();
   loadCertificatesAdmin();
+  loadNewsAdmin();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -668,6 +671,113 @@ async function loadCertificatesAdmin() {
       </div>
       <a class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" href="certificate.html?verify=${c.certificate_number}" target="_blank" rel="noopener">View</a>
     </div>`).join("");
+}
+
+/* ---------------- NEWS MANAGEMENT ---------------- */
+
+async function saveNews(e) {
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById("news-status");
+  const id = form.id.value;
+
+  let photoUrl = null;
+  const file = form.photo.files[0];
+  if (file) {
+    status.textContent = "Uploading photo…";
+    status.style.color = "var(--text-muted)";
+    const path = `${Date.now()}-${file.name}`;
+    const { error: uploadError } = await supabaseClient.storage.from("news-photos").upload(path, file);
+    if (uploadError) {
+      status.textContent = "Photo upload failed: " + uploadError.message;
+      status.style.color = "#B3261E";
+      return;
+    }
+    const { data: urlData } = supabaseClient.storage.from("news-photos").getPublicUrl(path);
+    photoUrl = urlData.publicUrl;
+  }
+
+  const title = form.title.value.trim();
+  const payload = {
+    title,
+    category: form.category.value,
+    excerpt: form.excerpt.value.trim() || null,
+    body: form.body.value.trim() || null,
+    external_link: form.external_link.value.trim() || null,
+    is_published: form.is_published.checked,
+    published_at: form.is_published.checked ? new Date().toISOString() : null,
+  };
+  if (photoUrl) payload.image_url = photoUrl;
+
+  let error;
+  if (id) {
+    ({ error } = await supabaseClient.from("news").update(payload).eq("id", id));
+  } else {
+    payload.slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") + "-" + Date.now().toString().slice(-5);
+    ({ error } = await supabaseClient.from("news").insert(payload));
+  }
+
+  if (error) {
+    status.textContent = "Failed: " + error.message;
+    status.style.color = "#B3261E";
+    return;
+  }
+
+  status.textContent = id ? "Updated!" : "Published!";
+  status.style.color = "var(--green)";
+  resetNewsForm();
+  loadNewsAdmin();
+}
+
+function resetNewsForm() {
+  const form = document.getElementById("news-form");
+  form.reset();
+  form.id.value = "";
+  document.getElementById("news-form-title").textContent = "Add a News Article";
+  document.getElementById("news-cancel-edit").style.display = "none";
+}
+
+async function loadNewsAdmin() {
+  const list = document.getElementById("news-admin-list");
+  const { data, error } = await supabaseClient.from("news").select("*").order("created_at", { ascending: false });
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No articles yet.</p>`; return; }
+
+  list.innerHTML = data.map((n) => `
+    <div class="dir-row">
+      <div style="display:flex;align-items:center;gap:12px;">
+        ${n.image_url ? `<div style="width:44px;height:44px;border-radius:8px;background-image:url('${n.image_url}');background-size:cover;background-position:center;flex-shrink:0;"></div>` : ""}
+        <div>
+          <div class="dir-name">${escapeHtmlSt(n.title)} ${n.is_published ? "" : '<span style="color:var(--text-muted);font-weight:400;">(unpublished)</span>'}</div>
+          <div class="dir-meta">${escapeHtmlSt(n.category)}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" onclick='editNews(${JSON.stringify(n).replace(/'/g, "&apos;")})'>Edit</button>
+        <button class="delete-entry-btn" onclick="deleteNews('${n.id}')">Delete</button>
+      </div>
+    </div>`).join("");
+}
+
+function editNews(n) {
+  const form = document.getElementById("news-form");
+  form.id.value = n.id;
+  form.title.value = n.title || "";
+  form.category.value = n.category || "Association News";
+  form.excerpt.value = n.excerpt || "";
+  form.body.value = n.body || "";
+  form.external_link.value = n.external_link || "";
+  form.is_published.checked = !!n.is_published;
+  document.getElementById("news-form-title").textContent = "Edit Article";
+  document.getElementById("news-cancel-edit").style.display = "inline-block";
+  form.scrollIntoView({ behavior: "smooth" });
+}
+
+async function deleteNews(id) {
+  if (!confirm("Delete this article? This cannot be undone.")) return;
+  const { error } = await supabaseClient.from("news").delete().eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadNewsAdmin();
 }
 
 function escapeHtmlSt(str) {
