@@ -13,11 +13,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("leadership-cancel-edit").addEventListener("click", resetLeadershipForm);
   document.getElementById("announcement-form").addEventListener("submit", postAnnouncement);
   document.getElementById("committee-member-form").addEventListener("submit", addCommitteeMember);
+  document.getElementById("course-form").addEventListener("submit", saveCourse);
+  document.getElementById("course-cancel-edit").addEventListener("click", resetCourseForm);
+  document.getElementById("external-status-filter").addEventListener("change", loadExternalCpd);
+
+  document.querySelectorAll("#cpd-subtabs button").forEach((btn) => {
+    btn.addEventListener("click", () => switchCpdSubtab(btn.dataset.subtab));
+  });
 
   document.querySelectorAll("#sec-tabs button").forEach((btn) => {
     btn.addEventListener("click", () => switchTab(btn.dataset.tab));
   });
 });
+
+function switchCpdSubtab(sub) {
+  document.querySelectorAll("#cpd-subtabs button").forEach((b) => b.classList.toggle("active", b.dataset.subtab === sub));
+  document.querySelectorAll("#tab-cpd .comms-panel").forEach((p) => p.classList.toggle("active", p.id === "cpdsub-" + sub));
+}
 
 function switchTab(tab) {
   document.querySelectorAll("#sec-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
@@ -53,6 +65,9 @@ function showDashboard() {
   loadGallery();
   loadLeadershipAdmin();
   loadAnnouncementsAdmin();
+  loadCoursesAdmin();
+  loadExternalCpd();
+  loadCertificatesAdmin();
 }
 
 /* ---------------- DOCUMENTS ---------------- */
@@ -510,6 +525,149 @@ async function addCommitteeMember(e) {
   if (error) { alert("Failed: " + error.message); return; }
   form.reset();
   alert("Committee member added.");
+}
+
+/* ---------------- CPD: COURSES ---------------- */
+
+async function saveCourse(e) {
+  e.preventDefault();
+  const form = e.target;
+  const id = form.id.value;
+
+  const payload = {
+    title: form.title.value.trim(),
+    category: form.category.value,
+    description: form.description.value.trim() || null,
+    format: form.format.value,
+    instructor: form.instructor.value.trim() || null,
+    cpd_points: parseInt(form.cpd_points.value || "0", 10),
+    session_link: form.session_link.value.trim() || null,
+    start_date: form.start_date.value || null,
+    is_published: form.is_published.checked,
+  };
+
+  let error;
+  if (id) {
+    ({ error } = await supabaseClient.from("cpd_courses").update(payload).eq("id", id));
+  } else {
+    ({ error } = await supabaseClient.from("cpd_courses").insert(payload));
+  }
+
+  if (error) { alert("Failed: " + error.message); return; }
+  resetCourseForm();
+  loadCoursesAdmin();
+}
+
+function resetCourseForm() {
+  const form = document.getElementById("course-form");
+  form.reset();
+  form.id.value = "";
+  document.getElementById("course-form-title").textContent = "Add a Course";
+  document.getElementById("course-cancel-edit").style.display = "none";
+}
+
+async function loadCoursesAdmin() {
+  const list = document.getElementById("courses-admin-list");
+  const { data, error } = await supabaseClient.from("cpd_courses").select("*").order("created_at", { ascending: false });
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No courses yet — add one above.</p>`; return; }
+
+  list.innerHTML = data.map((c) => `
+    <div class="cpd-course-row">
+      <h4>${escapeHtmlSt(c.title)} ${c.is_published ? "" : '<span style="color:var(--text-muted);font-weight:400;">(unpublished)</span>'}</h4>
+      <div class="cpd-course-meta">${escapeHtmlSt(c.category)} · ${escapeHtmlSt(c.format || "")} · ${c.cpd_points} pts</div>
+      <div class="cpd-course-actions">
+        <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" onclick='editCourse(${JSON.stringify(c).replace(/'/g, "&apos;")})'>Edit</button>
+        <button class="delete-entry-btn" onclick="togglePublishCourse('${c.id}', ${!c.is_published})">${c.is_published ? "Unpublish" : "Publish"}</button>
+        <button class="delete-entry-btn" onclick="deleteCourse('${c.id}')">Delete</button>
+      </div>
+    </div>`).join("");
+}
+
+function editCourse(c) {
+  const form = document.getElementById("course-form");
+  form.id.value = c.id;
+  form.title.value = c.title || "";
+  form.category.value = c.category || "Clinical Medicine";
+  form.description.value = c.description || "";
+  form.format.value = c.format || "Self-Paced";
+  form.instructor.value = c.instructor || "";
+  form.cpd_points.value = c.cpd_points || 0;
+  form.session_link.value = c.session_link || "";
+  form.start_date.value = c.start_date || "";
+  form.is_published.checked = !!c.is_published;
+  document.getElementById("course-form-title").textContent = "Edit Course";
+  document.getElementById("course-cancel-edit").style.display = "inline-block";
+  form.scrollIntoView({ behavior: "smooth" });
+}
+
+async function togglePublishCourse(id, publish) {
+  const { error } = await supabaseClient.from("cpd_courses").update({ is_published: publish }).eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadCoursesAdmin();
+}
+
+async function deleteCourse(id) {
+  if (!confirm("Delete this course? This cannot be undone.")) return;
+  const { error } = await supabaseClient.from("cpd_courses").delete().eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadCoursesAdmin();
+}
+
+/* ---------------- CPD: EXTERNAL APPROVAL ---------------- */
+
+async function loadExternalCpd() {
+  const list = document.getElementById("external-cpd-list");
+  const statusFilter = document.getElementById("external-status-filter").value;
+
+  let query = supabaseClient.from("external_cpd_submissions").select("*").order("created_at", { ascending: false });
+  if (statusFilter) query = query.eq("status", statusFilter);
+
+  const { data, error } = await query;
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">Nothing here.</p>`; return; }
+
+  list.innerHTML = data.map((s) => `
+    <div class="dir-row">
+      <div>
+        <div class="dir-name">${escapeHtmlSt(s.activity_title)} — ${escapeHtmlSt(s.member_name)}</div>
+        <div class="dir-meta">${escapeHtmlSt(s.provider || "")} · ${s.cpd_points_claimed} pts claimed · ${s.activity_date ? new Date(s.activity_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
+        ${s.proof_document_link ? ` · <a href="${s.proof_document_link}" target="_blank" rel="noopener">Proof</a>` : ""}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="status-pill ${s.status.toLowerCase()}">${escapeHtmlSt(s.status)}</span>
+        ${s.status === "Pending" ? `
+          <button class="btn-approve" style="padding:5px 12px;font-size:0.78rem;" onclick="reviewExternalCpd('${s.id}','Approved')">Approve</button>
+          <button class="delete-entry-btn" onclick="reviewExternalCpd('${s.id}','Rejected')">Reject</button>` : ""}
+      </div>
+    </div>`).join("");
+}
+
+async function reviewExternalCpd(id, status) {
+  const { error } = await supabaseClient
+    .from("external_cpd_submissions")
+    .update({ status, reviewed_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadExternalCpd();
+}
+
+/* ---------------- CPD: CERTIFICATES ---------------- */
+
+async function loadCertificatesAdmin() {
+  const list = document.getElementById("certificates-admin-list");
+  const { data, error } = await supabaseClient.from("certificates").select("*").order("issued_at", { ascending: false }).limit(100);
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No certificates issued yet.</p>`; return; }
+
+  list.innerHTML = data.map((c) => `
+    <div class="dir-row">
+      <div>
+        <div class="dir-name">${escapeHtmlSt(c.recipient_name)} — ${escapeHtmlSt(c.reference_title)}</div>
+        <div class="dir-meta">${escapeHtmlSt(c.certificate_type)} · ${escapeHtmlSt(c.certificate_number)} · ${new Date(c.issued_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</div>
+      </div>
+      <a class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" href="certificate.html?verify=${c.certificate_number}" target="_blank" rel="noopener">View</a>
+    </div>`).join("");
 }
 
 function escapeHtmlSt(str) {
