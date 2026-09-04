@@ -73,12 +73,27 @@ async function login(e) {
 
 async function signup(e) {
   e.preventDefault();
+  const membershipNumber = document.getElementById("signup-membership-number").value.trim();
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
   const note = document.getElementById("portal-note");
 
   if (password.length < 6) {
     note.textContent = "Password must be at least 6 characters.";
+    note.style.color = "#B3261E";
+    return;
+  }
+
+  note.textContent = "Verifying membership…";
+  note.style.color = "var(--text-muted)";
+
+  const { data: isVerified, error: verifyError } = await supabaseClient.rpc("verify_member_for_signup", {
+    p_membership_number: membershipNumber,
+    p_email: email,
+  });
+
+  if (verifyError || !isVerified) {
+    note.textContent = "We couldn't verify that membership number and email match an approved GMCOA-U membership. Please check your details, or apply for membership first.";
     note.style.color = "#B3261E";
     return;
   }
