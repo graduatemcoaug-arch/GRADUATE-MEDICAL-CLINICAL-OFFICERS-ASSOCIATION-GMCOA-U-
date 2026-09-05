@@ -188,6 +188,18 @@ async function submitRegistration(e) {
 
   document.getElementById("event-reg-modal-bg").classList.remove("open");
   form.reset();
+
+  sendEmail(
+    payload.email,
+    `Registration Confirmed: ${payload.event_title}`,
+    `<p>Dear ${payload.full_name},</p>
+     <p>Your registration for <strong>${payload.event_title}</strong> is confirmed.</p>
+     <p><strong>Registration Number:</strong> ${payload.registration_number}<br>
+     <strong>Attendance Type:</strong> ${payload.attendance_type}</p>
+     <p>You can view and print your event pass anytime at gmcoa-ug.org/event-pass.html using this registration number and email.</p>
+     <p>See you there!</p>
+     <p>— GMCOA-U Secretariat</p>`
+  );
   showEventPass(payload);
 }
 
