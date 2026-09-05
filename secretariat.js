@@ -281,16 +281,35 @@ async function loadAdminMessages() {
 async function sendAdminReply(e) {
   e.preventDefault();
   const form = e.target;
+  const messageBody = form.body.value.trim();
   const { data: { session } } = await supabaseClient.auth.getSession();
   const { error } = await supabaseClient.from("thread_messages").insert({
     thread_id: adminCurrentThreadId,
     sender_email: session.user.email,
     sender_role: "Secretariat",
-    body: form.body.value.trim(),
+    body: messageBody,
   });
   if (error) { alert("Failed: " + error.message); return; }
   form.reset();
   loadAdminMessages();
+
+  const { data: thread } = await supabaseClient
+    .from("message_threads")
+    .select("member_email, member_name, subject")
+    .eq("id", adminCurrentThreadId)
+    .single();
+
+  if (thread) {
+    sendEmail(
+      thread.member_email,
+      `New reply from GMCOA-U Secretariat: ${thread.subject}`,
+      `<p>Dear ${thread.member_name},</p>
+       <p>The Secretariat has replied to your message "<strong>${thread.subject}</strong>":</p>
+       <p style="padding:12px;background:#f5f5f5;border-radius:8px;">${escapeHtmlSt(messageBody)}</p>
+       <p>Log in to your Member Dashboard to view the full conversation and reply.</p>
+       <p>— GMCOA-U Secretariat</p>`
+    );
+  }
 }
 
 /* ---------------- PHOTO GALLERY ---------------- */
@@ -486,6 +505,38 @@ async function postAnnouncement(e) {
   };
   const { error } = await supabaseClient.from("announcements").insert(payload);
   if (error) { alert("Failed: " + error.message); return; }
+
+  // Email all active members. Note: on Resend's free tier (100/day),
+  // a large membership could exceed the daily limit — some emails may
+  // silently fail to send if that happens.
+  const { data: members } = await supabaseClient
+    .from("member_directory")
+    .select("membership_number, full_name")
+    .eq("status", "Active");
+
+  if (members && members.length > 0) {
+    const membershipNumbers = members.map((m) => m.membership_number);
+    const { data: apps } = await supabaseClient
+      .from("membership_applications")
+      .select("membership_number, email")
+      .in("membership_number", membershipNumbers);
+
+    if (apps) {
+      apps.forEach((a) => {
+        const member = members.find((m) => m.membership_number === a.membership_number);
+        sendEmail(
+          a.email,
+          `New Announcement: ${payload.title}`,
+          `<p>Dear ${member?.full_name || "Member"},</p>
+           <p><strong>${escapeHtmlSt(payload.title)}</strong></p>
+           <p>${escapeHtmlSt(payload.body)}</p>
+           <p>View all announcements on your Member Dashboard.</p>
+           <p>— GMCOA-U Secretariat</p>`
+        );
+      });
+    }
+  }
+
   form.reset();
   loadAnnouncementsAdmin();
 }
