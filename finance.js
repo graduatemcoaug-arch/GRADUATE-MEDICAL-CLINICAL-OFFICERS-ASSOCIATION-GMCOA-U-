@@ -564,6 +564,12 @@ async function confirmInvoicePaid(id) {
   const select = document.querySelector(`.invoice-method-select[data-id="${id}"]`);
   const method = select ? select.value : "Other";
 
+  const { data: invoiceDetails } = await supabaseClient
+    .from("payment_invoices")
+    .select("member_email, member_name, invoice_number, payment_type, amount")
+    .eq("id", id)
+    .single();
+
   const receiptWindow = window.open("", "_blank");
   if (receiptWindow) receiptWindow.document.write("<p>Confirming payment…</p>");
 
@@ -576,6 +582,21 @@ async function confirmInvoicePaid(id) {
 
   loadInvoicesAdmin();
   loadFinanceData();
+
+  if (invoiceDetails) {
+    sendEmail(
+      invoiceDetails.member_email,
+      "Payment Confirmed — GMCOA-U",
+      `<p>Dear ${invoiceDetails.member_name},</p>
+       <p>Your payment has been confirmed by the Treasurer.</p>
+       <p><strong>Invoice:</strong> ${invoiceDetails.invoice_number}<br>
+       <strong>Type:</strong> ${invoiceDetails.payment_type}<br>
+       <strong>Amount:</strong> UGX ${Number(invoiceDetails.amount).toLocaleString()}</p>
+       <p>You can view and print your official receipt anytime from your Member Dashboard.</p>
+       <p>Thank you for your payment.</p>
+       <p>— GMCOA-U Secretariat</p>`
+    );
+  }
 
   if (newTxId) {
     const { data: tx } = await supabaseClient.from("finance_transactions").select("*").eq("id", newTxId).single();
