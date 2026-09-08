@@ -40,7 +40,7 @@ function switchTab(tab) {
 
 async function checkSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) showDashboard();
+  if (session) enforceRole(["Secretariat"], showDashboard);
 }
 async function login(e) {
   e.preventDefault();
@@ -49,7 +49,7 @@ async function login(e) {
   const note = document.getElementById("login-note");
   const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { note.textContent = "Login failed."; note.style.color = "#B3261E"; return; }
-  showDashboard();
+  enforceRole(["Secretariat"], showDashboard);
 }
 async function logout() {
   await supabaseClient.auth.signOut();
