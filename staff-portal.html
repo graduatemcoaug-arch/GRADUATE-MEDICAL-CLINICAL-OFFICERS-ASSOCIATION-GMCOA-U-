@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Portal | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Secretariat · Finance · Governance · Committees</div>
+    <h1>Staff Portal</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="member-auth-box">
+      <div class="portal-tabs">
+        <button id="tab-login" class="active">Log In</button>
+        <button id="tab-signup">First-Time Sign Up</button>
+      </div>
+
+      <div id="login-box" class="admin-login-box">
+        <form id="login-form">
+          <label for="login-email">Email</label>
+          <input id="login-email" type="email" required>
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" required>
+          <button class="btn btn-primary" type="submit">Log In</button>
+        </form>
+        <p id="login-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+
+      <div id="signup-box" class="admin-login-box" style="display:none;">
+        <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 4px;">Only pre-approved staff emails can create an account here.</p>
+        <form id="signup-form">
+          <label for="signup-email">Email</label>
+          <input id="signup-email" type="email" required>
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" minlength="6" required>
+          <button class="btn btn-primary" type="submit">Create Account</button>
+        </form>
+        <p id="signup-note" style="margin-top:12px;font-size:0.88rem;"></p>
+      </div>
+    </div>
+
+    <div id="role-chooser" class="admin-login-box" style="display:none;"></div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="password-toggle.js"></script>
+<script src="staff-portal.js"></script>
+</body>
+</html>
