@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><title>Push Test</title></head>
+<body style="font-family:sans-serif;padding:20px;">
+<h2>Send-Push Debug Test</h2>
+<button onclick="test()" style="padding:12px 20px;font-size:16px;">Run Test</button>
+<pre id="output" style="background:#eee;padding:16px;margin-top:16px;white-space:pre-wrap;"></pre>
+
+<script>
+async function test() {
+  const output = document.getElementById("output");
+  output.textContent = "Running...";
+
+  try {
+    const res = await fetch("https://oxcefktkqqjxmekuyvwd.supabase.co/functions/v1/send-push", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94Y2Vma3RrcXFqeG1la3V5dndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5NjIzNDEsImV4cCI6MjEwMzUzODM0MX0.lWow49DWsohal4v-MOZ6oqWXhUxsm5kMK2Ol5YNAaew",
+        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94Y2Vma3RrcXFqeG1la3V5dndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5NjIzNDEsImV4cCI6MjEwMzUzODM0MX0.lWow49DWsohal4v-MOZ6oqWXhUxsm5kMK2Ol5YNAaew"
+      },
+      body: JSON.stringify({
+        subscription: { endpoint: "https://example.com/test", p256dh: "test", auth: "test" },
+        title: "Test",
+        body: "Test body",
+        url: "/"
+      })
+    });
+    const text = await res.text();
+    output.textContent = "Status: " + res.status + "\n\n" + text;
+  } catch (err) {
+    output.textContent = "Fetch error: " + err.message;
+  }
+}
+</script>
+</body>
+</html>
