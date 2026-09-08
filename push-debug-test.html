@@ -20,9 +20,13 @@ async function test() {
         "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94Y2Vma3RrcXFqeG1la3V5dndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5NjIzNDEsImV4cCI6MjEwMzUzODM0MX0.lWow49DWsohal4v-MOZ6oqWXhUxsm5kMK2Ol5YNAaew"
       },
       body: JSON.stringify({
-        subscription: { endpoint: "https://example.com/test", p256dh: "test", auth: "test" },
-        title: "Test",
-        body: "Test body",
+        subscription: {
+          endpoint: "https://fcm.googleapis.com/fcm/send/cQsuOXEJDcs:APA91bFrlSR2dUq6Q6_9nVD9HuQ_inzCYzWWDNRk2OLx_diWK0kPAMhJiuZjBE443yzUWvskOt2q7BZRNh-z_-4DuKhviWXm7YoZIVCgHeCiJ3I3u7TP9Ykko0PEBPeDV3mTFMW91Qeh",
+          p256dh: "BLsTd45liZt9wQKItEqR0Op981VVEu7wd25r32vlnucgUXuxPpvnK-wD-sJzB3sQ71DyccVruC0oRYAio96BoQM",
+          auth: "ZdCzPQssRek3jebwUAiGCA"
+        },
+        title: "Real Test",
+        body: "Testing with real subscription data",
         url: "/"
       })
     });
