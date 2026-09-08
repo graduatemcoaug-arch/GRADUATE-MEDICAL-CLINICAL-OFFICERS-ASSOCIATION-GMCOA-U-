@@ -7,6 +7,28 @@ const CORE_ASSETS = [
   "logo.png",
 ];
 
+self.addEventListener("push", (event) => {
+  let data = { title: "GMCOA-U", body: "You have a new notification.", url: "/" };
+  try {
+    data = event.data.json();
+  } catch (e) {}
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: "icon-192.png",
+      badge: "icon-192.png",
+      data: { url: data.url },
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(clients.openWindow(url));
+});
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS))
