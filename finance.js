@@ -27,7 +27,7 @@ function switchTab(tab) {
 
 async function checkSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) showDashboard();
+  if (session) enforceRole(["Finance","Secretariat"], showDashboard);
 }
 
 async function login(e) {
@@ -37,7 +37,7 @@ async function login(e) {
   const note = document.getElementById("login-note");
   const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { note.textContent = "Login failed — check your email and password."; note.style.color = "#B3261E"; return; }
-  showDashboard();
+  enforceRole(["Finance","Secretariat"], showDashboard);
 }
 
 async function logout() {
