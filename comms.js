@@ -17,7 +17,7 @@ function switchTab(tab) {
 
 async function checkSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
-  if (session) showDashboard();
+  if (session) enforceRole(["Secretariat"], showDashboard);
 }
 
 async function login(e) {
@@ -32,7 +32,7 @@ async function login(e) {
     note.style.color = "#B3261E";
     return;
   }
-  showDashboard();
+  enforceRole(["Secretariat"], showDashboard);
 }
 
 async function logout() {
