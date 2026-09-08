@@ -533,6 +533,7 @@ async function postAnnouncement(e) {
            <p>View all announcements on your Member Dashboard.</p>
            <p>— GMCOA-U Secretariat</p>`
         );
+        sendPushToEmail(a.email, payload.title, payload.body, "dashboard.html");
       });
     }
   }
