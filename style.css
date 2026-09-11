@@ -1214,8 +1214,15 @@ footer.site-footer {
 }
 .enroll-modal { position: relative; }
 
+/* ---------- Dashboard Mobile Collapsible Menu ---------- */
+#dash-menu-toggle { display: inline-block; }
+#dash-tabs { display: none; }
+#dash-tabs.open { display: flex; }
+
 /* ---------- Dashboard Responsive Sidebar ---------- */
 @media (min-width: 768px) {
+  #dash-menu-toggle { display: none; }
+  #dash-tabs { display: flex !important; }
   .dash-layout { display: flex; gap: 28px; align-items: flex-start; }
   .dash-layout #dash-tabs {
     flex-direction: column; width: 220px; flex-shrink: 0;
