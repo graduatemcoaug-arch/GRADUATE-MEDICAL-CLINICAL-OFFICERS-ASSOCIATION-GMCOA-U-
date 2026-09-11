@@ -1207,3 +1207,9 @@ footer.site-footer {
 .cpd-course-row h4 { margin: 0 0 4px; font-size: 0.95rem; }
 .cpd-course-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px; }
 .cpd-course-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.modal-close-btn {
+  position: absolute; top: 12px; right: 16px; background: none; border: none;
+  font-size: 1.6rem; color: var(--text-muted); cursor: pointer; line-height: 1;
+}
+.enroll-modal { position: relative; }
