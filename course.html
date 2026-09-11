@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course | GMCOA-U CPD Academy</title>
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="dashboard.html">My Dashboard</a>
+      <a href="cpd.html">CPD Academy</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">CPD Academy</div>
+    <h1 id="course-title">Loading…</h1>
+    <p id="course-meta" style="color:rgba(255,255,255,.8);"></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div class="dash-card" style="margin-bottom:24px;max-width:500px;">
+      <h3>Your Progress</h3>
+      <div style="background:var(--bg-soft);border-radius:20px;height:12px;overflow:hidden;margin-top:10px;">
+        <div id="course-progress-bar" style="background:var(--green);height:100%;width:0%;border-radius:20px;transition:width 0.4s;"></div>
+      </div>
+      <p id="course-progress-note" class="dash-empty-note" style="margin-top:10px;">Loading…</p>
+    </div>
+
+    <div id="lessons-list"><p class="card-empty">Loading lessons…</p></div>
+
+    <div id="course-complete-actions" style="display:none;margin-top:24px;" class="dash-card">
+      <h3>🎉 All Lessons Complete!</h3>
+      <p style="color:var(--text-muted);font-size:0.9rem;">Take the assessment to earn your CPD points and certificate.</p>
+      <a class="btn btn-primary" id="take-quiz-link" href="#">Take Quiz</a>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="course.js"></script>
+</body>
+</html>
