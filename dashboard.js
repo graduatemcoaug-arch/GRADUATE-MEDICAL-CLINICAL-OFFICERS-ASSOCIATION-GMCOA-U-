@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ok = await enablePushNotifications(window.currentEmail);
     btn.textContent = ok ? "✅ Notifications Enabled" : "🔔 Enable Push Notifications";
   });
+  document.getElementById("print-transcript-btn").addEventListener("click", printCpdTranscript);
 });
 
 async function logout() {
@@ -167,13 +168,19 @@ async function loadCpd(email) {
     targetNote.style.color = met ? "var(--green)" : "var(--text-muted)";
   }
 
+  const progressBar = document.getElementById("cpd-progress-bar");
+  if (progressBar) {
+    const pct = Math.min(100, Math.round((totalPoints / annualTarget) * 100));
+    progressBar.style.width = pct + "%";
+  }
+
   listEl.innerHTML = data.map((e) => `
     <div class="dash-row">
       <span class="dr-label">${escapeHtmlD(e.cpd_courses?.title || "Untitled course")}</span>
       <span class="dr-value">
         ${e.completed
           ? `✓ ${e.cpd_courses?.cpd_points || 0} pts · <a href="quiz.html?course=${e.course_id}">Retake Quiz</a> · <a href="certificate.html?type=course&ref=${e.course_id}">Certificate</a>`
-          : `Enrolled · <a href="quiz.html?course=${e.course_id}">Take Quiz</a>`}
+          : `Enrolled · <a href="course.html?id=${e.course_id}">Continue Learning</a> · <a href="quiz.html?course=${e.course_id}">Take Quiz</a>`}
       </span>
     </div>`).join("");
 }
@@ -649,6 +656,84 @@ async function loadMyExternalCpd(email) {
       <span class="dr-label">${escapeHtmlD(s.activity_title)}</span>
       <span class="dr-value">${s.cpd_points_claimed} pts · <span class="status-pill ${s.status.toLowerCase()}">${escapeHtmlD(s.status)}</span></span>
     </div>`).join("");
+}
+
+async function printCpdTranscript() {
+  const app = window.currentApp;
+  const email = window.currentEmail;
+  const w = window.open("", "_blank");
+  w.document.write("<p>Loading transcript…</p>");
+
+  const { data: completedCourses } = await supabaseClient
+    .from("cpd_enrollments")
+    .select("cpd_courses(title, category, cpd_points, start_date)")
+    .eq("email", email)
+    .eq("completed", true);
+
+  const { data: externalCpd } = await supabaseClient
+    .from("external_cpd_submissions")
+    .select("activity_title, provider, activity_date, cpd_points_claimed")
+    .eq("member_email", email)
+    .eq("status", "Approved");
+
+  const courseRows = (completedCourses || []).map((e) => ({
+    title: e.cpd_courses?.title || "—",
+    category: e.cpd_courses?.category || "—",
+    date: e.cpd_courses?.start_date,
+    points: e.cpd_courses?.cpd_points || 0,
+    source: "GMCOA-U Course",
+  }));
+
+  const externalRows = (externalCpd || []).map((s) => ({
+    title: s.activity_title,
+    category: s.provider || "External",
+    date: s.activity_date,
+    points: s.cpd_points_claimed,
+    source: "External (Approved)",
+  }));
+
+  const allRows = [...courseRows, ...externalRows].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+  const totalPoints = allRows.reduce((sum, r) => sum + Number(r.points), 0);
+
+  const logoUrl = new URL("logo.png", location.href).href;
+
+  w.document.open();
+  w.document.write(`
+    <html><head><title>CPD Transcript — ${app?.full_name || email}</title>
+    <style>
+      body{font-family:sans-serif;padding:40px;color:#17242E;max-width:700px;margin:0 auto;}
+      .header{display:flex;align-items:center;gap:14px;border-bottom:3px solid #0B3D62;padding-bottom:16px;margin-bottom:20px;}
+      .header img{width:56px;height:56px;}
+      .header h2{margin:0;color:#0B3D62;}
+      .header p{margin:2px 0 0;color:#55666F;font-size:0.85rem;}
+      h1{color:#0B3D62;font-size:1.2rem;}
+      table{width:100%;border-collapse:collapse;margin-top:16px;font-size:0.88rem;}
+      th{text-align:left;padding:8px;background:#f5f5f5;border-bottom:2px solid #ccc;}
+      td{padding:8px;border-bottom:1px solid #E1E8EC;}
+      .total{margin-top:20px;font-size:1.1rem;font-weight:700;color:#0B3D62;}
+    </style>
+    </head><body>
+    <div class="header">
+      <img src="${logoUrl}" alt="GMCOA-U">
+      <div>
+        <h2>GMCOA-U</h2>
+        <p>Graduate Medical Clinical Officers Association of Uganda</p>
+        <p>P.O. Box 118044, Wakiso, Uganda</p>
+      </div>
+    </div>
+    <h1>Continuing Professional Development (CPD) Transcript</h1>
+    <p><strong>${app?.full_name || email}</strong>${app?.membership_number ? ` · ${app.membership_number}` : ""}</p>
+    <table>
+      <thead><tr><th>Date</th><th>Activity</th><th>Category/Provider</th><th>Source</th><th>Points</th></tr></thead>
+      <tbody>
+        ${allRows.map((r) => `<tr><td>${r.date ? new Date(r.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "—"}</td><td>${r.title}</td><td>${r.category}</td><td>${r.source}</td><td>${r.points}</td></tr>`).join("")}
+      </tbody>
+    </table>
+    <p class="total">Total CPD Points: ${totalPoints}</p>
+    <p style="margin-top:30px;color:#55666F;font-size:0.8rem;">Generated on ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} from the official GMCOA-U member portal.</p>
+    <script>window.print();</script>
+    </body></html>`);
+  w.document.close();
 }
 
 function escapeHtmlD(str) {
