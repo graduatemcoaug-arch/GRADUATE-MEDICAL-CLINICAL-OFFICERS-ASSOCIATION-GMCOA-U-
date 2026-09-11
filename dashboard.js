@@ -10,7 +10,26 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.textContent = ok ? "✅ Notifications Enabled" : "🔔 Enable Push Notifications";
   });
   document.getElementById("print-transcript-btn").addEventListener("click", printCpdTranscript);
+
+  document.querySelectorAll("#dash-tabs button").forEach((btn) => {
+    btn.addEventListener("click", () => switchDashTab(btn.dataset.tab));
+  });
+
+  document.getElementById("show-payment-form-btn").addEventListener("click", () => {
+    document.getElementById("payment-form-wrap").style.display = "block";
+    document.getElementById("show-payment-form-btn").style.display = "none";
+  });
+
+  document.getElementById("show-external-cpd-form-btn").addEventListener("click", () => {
+    document.getElementById("external-cpd-form-wrap").style.display = "block";
+    document.getElementById("show-external-cpd-form-btn").style.display = "none";
+  });
 });
+
+function switchDashTab(tab) {
+  document.querySelectorAll("#dash-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+  document.querySelectorAll("[id^='dashtab-']").forEach((p) => p.classList.toggle("active", p.id === "dashtab-" + tab));
+}
 
 async function logout() {
   await supabaseClient.auth.signOut();
