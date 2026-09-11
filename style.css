@@ -1213,3 +1213,20 @@ footer.site-footer {
   font-size: 1.6rem; color: var(--text-muted); cursor: pointer; line-height: 1;
 }
 .enroll-modal { position: relative; }
+
+/* ---------- Dashboard Responsive Sidebar ---------- */
+@media (min-width: 768px) {
+  .dash-layout { display: flex; gap: 28px; align-items: flex-start; }
+  .dash-layout #dash-tabs {
+    flex-direction: column; width: 220px; flex-shrink: 0;
+    border-bottom: none; gap: 6px; position: sticky; top: 20px;
+  }
+  .dash-layout #dash-tabs button {
+    text-align: left; border-bottom: none; border-left: 3px solid transparent;
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+  }
+  .dash-layout #dash-tabs button.active {
+    border-left-color: var(--deep-blue); background: var(--bg-soft);
+  }
+  .dash-layout .dash-content { flex: 1; min-width: 0; }
+}
