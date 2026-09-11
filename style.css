@@ -1244,3 +1244,10 @@ footer.site-footer {
   #admin-menu-toggle { display: none; }
   #admin-sidebar-nav { display: block !important; width: 220px; }
 }
+
+/* ---------- Member Sidebar ---------- */
+#member-sidebar-mount { margin-bottom: 20px; }
+@media (min-width: 900px) {
+  #member-menu-toggle { display: none; }
+  #member-sidebar-nav { display: block !important; width: 200px; }
+}
