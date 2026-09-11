@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overview | GMCOA-U Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow">Staff Portal</div>
+    <h1>Overview</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="admin-login" class="admin-login-box">
+      <form id="login-form">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" required>
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" required>
+        <button class="btn btn-primary" type="submit">Log In</button>
+      </form>
+      <p id="login-error" style="color:#B3261E;margin-top:10px;font-size:0.88rem;"></p>
+    </div>
+
+    <div id="admin-dashboard" style="display:none;">
+
+      <div class="dash-grid" style="margin-bottom:24px;">
+        <div class="dash-card">
+          <h3>Pending Applications</h3>
+          <div class="cpd-total"><div class="num" id="stat-pending-apps">—</div></div>
+        </div>
+        <div class="dash-card">
+          <h3>Unhandled Messages</h3>
+          <div class="cpd-total"><div class="num" id="stat-open-messages">—</div></div>
+        </div>
+        <div class="dash-card">
+          <h3>Upcoming Events</h3>
+          <div class="cpd-total"><div class="num" id="stat-upcoming-events">—</div></div>
+        </div>
+        <div class="dash-card">
+          <h3>Pending Payments</h3>
+          <div class="cpd-total"><div class="num" id="stat-pending-payments">—</div></div>
+        </div>
+        <div class="dash-card">
+          <h3>Active Members</h3>
+          <div class="cpd-total"><div class="num" id="stat-active-members">—</div></div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div class="section-eyebrow">Quick Actions</div>
+        <h2>Get Started</h2>
+      </div>
+      <div class="dash-grid">
+        <a href="admin.html" class="btn btn-primary" style="display:block;text-align:center;">Review Applications</a>
+        <a href="secretariat.html" class="btn btn-primary" style="display:block;text-align:center;">Open Messages</a>
+        <a href="events-admin.html" class="btn btn-primary" style="display:block;text-align:center;">Manage Events</a>
+        <a href="finance.html" class="btn btn-primary" style="display:block;text-align:center;">Review Payments</a>
+        <a href="directory.html" class="btn btn-primary" style="display:block;text-align:center;">Member Directory</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="role-guard.js"></script>
+<script src="admin-sidebar.js"></script>
+<script src="overview.js"></script>
+</body>
+</html>
