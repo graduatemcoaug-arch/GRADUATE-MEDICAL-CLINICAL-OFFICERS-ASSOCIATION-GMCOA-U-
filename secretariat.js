@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("committee-member-form").addEventListener("submit", addCommitteeMember);
   document.getElementById("course-form").addEventListener("submit", saveCourse);
   document.getElementById("course-cancel-edit").addEventListener("click", resetCourseForm);
+  document.getElementById("lesson-form").addEventListener("submit", saveLesson);
+  document.getElementById("lesson-cancel-edit").addEventListener("click", resetLessonForm);
   document.getElementById("external-status-filter").addEventListener("change", loadExternalCpd);
   document.getElementById("news-form").addEventListener("submit", saveNews);
   document.getElementById("news-cancel-edit").addEventListener("click", resetNewsForm);
@@ -633,6 +635,7 @@ async function loadCoursesAdmin() {
       <div class="cpd-course-meta">${escapeHtmlSt(c.category)} · ${escapeHtmlSt(c.format || "")} · ${c.cpd_points} pts</div>
       <div class="cpd-course-actions">
         <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" onclick='editCourse(${JSON.stringify(c).replace(/'/g, "&apos;")})'>Edit</button>
+        <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:6px 12px;font-size:0.8rem;" onclick="openLessonManager('${c.id}', '${escapeHtmlSt(c.title).replace(/'/g, "&apos;")}')">Manage Lessons</button>
         <button class="delete-entry-btn" onclick="togglePublishCourse('${c.id}', ${!c.is_published})">${c.is_published ? "Unpublish" : "Publish"}</button>
         <button class="delete-entry-btn" onclick="deleteCourse('${c.id}')">Delete</button>
       </div>
@@ -830,6 +833,96 @@ async function deleteNews(id) {
   const { error } = await supabaseClient.from("news").delete().eq("id", id);
   if (error) { alert("Failed: " + error.message); return; }
   loadNewsAdmin();
+}
+
+/* ---------------- CPD: LESSONS ---------------- */
+
+let currentLessonCourseId = null;
+
+function openLessonManager(courseId, courseTitle) {
+  currentLessonCourseId = courseId;
+  document.getElementById("lesson-manager-title").textContent = "Manage Lessons — " + courseTitle;
+  document.getElementById("lesson-form").course_id.value = courseId;
+  resetLessonForm();
+  loadLessonsAdmin();
+  document.getElementById("lesson-manager-modal-bg").classList.add("open");
+}
+
+async function saveLesson(e) {
+  e.preventDefault();
+  const form = e.target;
+  const id = form.id.value;
+
+  const payload = {
+    course_id: form.course_id.value,
+    title: form.title.value.trim(),
+    content_type: form.content_type.value,
+    content_url: form.content_url.value.trim() || null,
+    description: form.description.value.trim() || null,
+    order_index: parseInt(form.order_index.value || "0", 10),
+  };
+
+  let error;
+  if (id) {
+    ({ error } = await supabaseClient.from("cpd_lessons").update(payload).eq("id", id));
+  } else {
+    ({ error } = await supabaseClient.from("cpd_lessons").insert(payload));
+  }
+
+  if (error) { alert("Failed: " + error.message); return; }
+  resetLessonForm();
+  loadLessonsAdmin();
+}
+
+function resetLessonForm() {
+  const form = document.getElementById("lesson-form");
+  const courseId = form.course_id.value;
+  form.reset();
+  form.id.value = "";
+  form.course_id.value = courseId;
+  document.getElementById("lesson-cancel-edit").style.display = "none";
+}
+
+async function loadLessonsAdmin() {
+  const list = document.getElementById("lessons-admin-list");
+  const { data, error } = await supabaseClient
+    .from("cpd_lessons")
+    .select("*")
+    .eq("course_id", currentLessonCourseId)
+    .order("order_index");
+
+  if (error) { list.innerHTML = `<p class="card-empty">Something went wrong.</p>`; return; }
+  if (!data || data.length === 0) { list.innerHTML = `<p class="card-empty">No lessons yet — add one above.</p>`; return; }
+
+  list.innerHTML = data.map((l) => `
+    <div class="dir-row">
+      <div>
+        <div class="dir-name">${l.order_index}. ${escapeHtmlSt(l.title)}</div>
+        <div class="dir-meta">${escapeHtmlSt(l.content_type)}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:5px 10px;font-size:0.76rem;" onclick='editLesson(${JSON.stringify(l).replace(/'/g, "&apos;")})'>Edit</button>
+        <button class="delete-entry-btn" onclick="deleteLesson('${l.id}')">Delete</button>
+      </div>
+    </div>`).join("");
+}
+
+function editLesson(l) {
+  const form = document.getElementById("lesson-form");
+  form.id.value = l.id;
+  form.title.value = l.title || "";
+  form.content_type.value = l.content_type || "Video";
+  form.content_url.value = l.content_url || "";
+  form.description.value = l.description || "";
+  form.order_index.value = l.order_index || 0;
+  document.getElementById("lesson-cancel-edit").style.display = "inline-block";
+}
+
+async function deleteLesson(id) {
+  if (!confirm("Delete this lesson?")) return;
+  const { error } = await supabaseClient.from("cpd_lessons").delete().eq("id", id);
+  if (error) { alert("Failed: " + error.message); return; }
+  loadLessonsAdmin();
 }
 
 function escapeHtmlSt(str) {
