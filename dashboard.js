@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchDashTab(btn.dataset.tab));
   });
 
+  document.getElementById("dash-menu-toggle").addEventListener("click", () => {
+    document.getElementById("dash-tabs").classList.toggle("open");
+  });
+
   document.getElementById("show-payment-form-btn").addEventListener("click", () => {
     document.getElementById("payment-form-wrap").style.display = "block";
     document.getElementById("show-payment-form-btn").style.display = "none";
@@ -29,6 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function switchDashTab(tab) {
   document.querySelectorAll("#dash-tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
   document.querySelectorAll("[id^='dashtab-']").forEach((p) => p.classList.toggle("active", p.id === "dashtab-" + tab));
+
+  const activeBtn = document.querySelector(`#dash-tabs button[data-tab="${tab}"]`);
+  if (activeBtn) document.getElementById("current-dash-tab-label").textContent = activeBtn.textContent;
+
+  document.getElementById("dash-tabs").classList.remove("open");
 }
 
 async function logout() {
@@ -318,14 +327,32 @@ async function loadAnnouncements() {
     return;
   }
 
-  box.innerHTML = data.map((a) => `
+  const renderOne = (a) => `
     <div class="dash-row" style="display:block;">
       <div style="display:flex;justify-content:space-between;">
         <span class="dr-label" style="font-weight:700;">${escapeHtmlD(a.title)}</span>
         <span class="dr-value" style="font-size:0.78rem;">${new Date(a.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
       </div>
       <p style="margin:6px 0 0;font-size:0.86rem;color:var(--text-muted);">${escapeHtmlD(a.body)}</p>
-    </div>`).join("");
+    </div>`;
+
+  const visibleCount = 3;
+  const visible = data.slice(0, visibleCount);
+  const rest = data.slice(visibleCount);
+
+  box.innerHTML = visible.map(renderOne).join("") +
+    (rest.length > 0
+      ? `<button class="btn btn-outline" id="show-more-announcements-btn" style="color:var(--deep-blue);border-color:var(--deep-blue);margin-top:10px;padding:8px 14px;font-size:0.82rem;">Show ${rest.length} Earlier Announcement${rest.length > 1 ? "s" : ""}</button>
+         <div id="more-announcements" style="display:none;margin-top:10px;">${rest.map(renderOne).join("")}</div>`
+      : "");
+
+  const showMoreBtn = document.getElementById("show-more-announcements-btn");
+  if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", () => {
+      document.getElementById("more-announcements").style.display = "block";
+      showMoreBtn.style.display = "none";
+    });
+  }
 }
 
 async function loadMyCard(app, email) {
