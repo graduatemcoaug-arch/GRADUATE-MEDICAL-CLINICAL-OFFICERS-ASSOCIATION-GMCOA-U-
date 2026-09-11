@@ -79,29 +79,7 @@ async function routeToRole(email) {
     return;
   }
 
-  const destinations = {
-    "Secretariat": "secretariat.html",
-    "Finance": "finance.html",
-    "Governance": "governance.html",
-    "Education Committee": "governance.html",
-    "Other Committee": "governance.html",
-  };
-
-  if (roleRows.length === 1) {
-    location.href = destinations[roleRows[0].role] || "admin.html";
-    return;
-  }
-
-  // Multiple roles — let them choose where to go.
-  const uniqueDestinations = [...new Set(roleRows.map((r) => destinations[r.role]))];
-  if (uniqueDestinations.length === 1) {
-    location.href = uniqueDestinations[0];
-    return;
-  }
-
-  const chooser = document.getElementById("role-chooser");
-  document.getElementById("member-auth-box").style.display = "none";
-  chooser.style.display = "block";
-  chooser.innerHTML = `<h3 style="margin:0 0 14px;">Where would you like to go?</h3>` +
-    roleRows.map((r) => `<a class="btn btn-primary" style="display:block;margin-bottom:10px;" href="${destinations[r.role]}">${r.role}</a>`).join("");
+  // Everyone lands on the shared Overview page first — from there, the
+  // sidebar (and each page's own role guard) governs where they can go.
+  location.href = "overview.html";
 }
