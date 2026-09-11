@@ -1237,3 +1237,10 @@ footer.site-footer {
   }
   .dash-layout .dash-content { flex: 1; min-width: 0; }
 }
+
+/* ---------- Admin Sidebar ---------- */
+#admin-sidebar-mount { margin-bottom: 20px; }
+@media (min-width: 900px) {
+  #admin-menu-toggle { display: none; }
+  #admin-sidebar-nav { display: block !important; width: 220px; }
+}
