@@ -2,6 +2,7 @@ let selectedCourseId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("cpd-category-filter").addEventListener("change", loadCourses);
+  document.getElementById("cpd-search").addEventListener("input", loadCourses);
   loadCourses();
   wireEnrollModal();
   document.querySelector(".nav-toggle")?.addEventListener("click", () => {
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadCourses() {
   const list = document.getElementById("courses-list");
   const filterVal = document.getElementById("cpd-category-filter").value;
+  const searchVal = document.getElementById("cpd-search").value.trim();
 
   list.innerHTML = `<p class="card-empty">Loading courses…</p>`;
 
@@ -22,6 +24,7 @@ async function loadCourses() {
     .order("start_date", { ascending: true });
 
   if (filterVal) query = query.eq("category", filterVal);
+  if (searchVal) query = query.ilike("title", `%${searchVal}%`);
 
   const { data, error } = await query;
 
