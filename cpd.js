@@ -96,7 +96,9 @@ async function submitEnrollment(e) {
   });
 
   if (error) {
-    note.textContent = "Something went wrong. Please try again.";
+    note.textContent = error.code === "23505"
+      ? "You're already enrolled in this course."
+      : "Something went wrong. Please try again.";
     note.style.color = "#B3261E";
     return;
   }
