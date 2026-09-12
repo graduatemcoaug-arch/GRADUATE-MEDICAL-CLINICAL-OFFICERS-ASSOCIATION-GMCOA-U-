@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+window.onerror = function(message, source, lineno, colno, error) {
+  window.__jsErrors = window.__jsErrors || [];
+  window.__jsErrors.push("ERROR: " + message + " (line " + lineno + ", col " + colno + ")");
+  return false;
+};
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Dashboard | GMCOA-U</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="logo.png" type="image/png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B3D62">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="GMCOA-U logo" class="mark">
+      GMCOA-U
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html">Public Site</a>
+      <a href="cpd.html">CPD Academy</a>
+      <a href="my-research.html">My Research</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="forums.html">Forums</a>
+      <a href="mentorship.html">Mentorship</a>
+      <a href="messages.html">Messages</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="logout-btn" style="color:#fff;">Log Out</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="section-eyebrow" id="welcome-email">Members Only</div>
+    <h1>My Dashboard</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    <div id="no-application-note" style="display:none;" class="coming-soon-card">
+      No application found under this email. If you haven't applied yet, <a href="apply.html">apply for membership</a> first, then log in here using the same email.
+    </div>
+
+    <div class="dash-layout">
+      <button class="btn btn-outline" id="dash-menu-toggle" style="color:var(--deep-blue);border-color:var(--deep-blue);margin-bottom:12px;">☰ <span id="current-dash-tab-label">Overview</span></button>
+      <div class="media-tabs" id="dash-tabs">
+        <button class="active" data-tab="overview">Overview</button>
+        <button data-tab="payments">Payments</button>
+        <button data-tab="cpd">CPD Academy</button>
+        <button data-tab="activity">Events &amp; Research</button>
+        <button data-tab="community">Community</button>
+      </div>
+
+      <div class="dash-content">
+
+    <!-- OVERVIEW -->
+    <div class="comms-panel active" id="dashtab-overview">
+      <div class="dash-grid">
+        <div class="dash-card" id="profile-card">
+          <h3>Personal Profile</h3>
+          <div class="dash-row"><span class="dr-label">Name</span><span class="dr-value" id="profile-name">—</span></div>
+          <div class="dash-row"><span class="dr-label">Category</span><span class="dr-value" id="profile-category">—</span></div>
+          <div class="dash-row"><span class="dr-label">Application Status</span><span class="dr-value" id="profile-status">—</span></div>
+          <div class="dash-row"><span class="dr-label">Location</span><span class="dr-value" id="profile-location">—</span></div>
+          <div class="dash-row"><span class="dr-label">Employer</span><span class="dr-value" id="profile-employer">—</span></div>
+        </div>
+
+        <div class="dash-card" id="membership-status-card" style="display:none;">
+          <h3>Membership Status</h3>
+          <div class="dash-row"><span class="dr-label">Membership No.</span><span class="dr-value" id="membership-number-display">—</span></div>
+          <div class="dash-row"><span class="dr-label">Status</span><span class="dr-value" id="membership-status-display">—</span></div>
+          <div class="dash-row"><span class="dr-label">Valid Until</span><span class="dr-value" id="membership-expiry-display">—</span></div>
+        </div>
+
+        <div class="dash-card dash-full" id="my-card-section" style="display:none;">
+          <h3>My Membership Card</h3>
+          <div id="my-card-container"></div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>Announcements</h3>
+          <button class="btn btn-outline" id="enable-push-btn" style="color:var(--deep-blue);border-color:var(--deep-blue);margin-bottom:14px;">🔔 Enable Push Notifications</button>
+          <button class="btn btn-primary" id="show-announcements-btn">+ View Announcements</button>
+          <div id="announcements-list" style="display:none;margin-top:14px;"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="comms-panel" id="dashtab-payments">
+      <div class="dash-grid">
+        <div class="dash-card" id="subscription-status-card" style="display:none;">
+          <h3>Subscription Status</h3>
+          <div class="dash-row"><span class="dr-label" id="sub-year-label">This Year's Dues</span><span id="subscription-status-display">—</span></div>
+          <div id="subscription-history"></div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>Make a Payment</h3>
+          <button class="btn btn-primary" id="show-payment-form-btn" style="margin-bottom:14px;">+ Make a Payment</button>
+          <div id="payment-form-wrap" style="display:none;">
+            <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:10px;">
+              Online payment isn't connected yet — pay using any of the options below, then generate an invoice below with the same amount as your reference. The Treasurer will confirm it, and it'll then show in your Financial Records automatically.
+            </p>
+            <div class="dash-row"><span class="dr-label">Mobile Money (Direct)</span><span class="dr-value">+256 751 351607 (Dr. Herman Beigana, Treasurer)</span></div>
+            <div class="dash-row"><span class="dr-label">Bank Account</span><span class="dr-value">DFCU Bank, A/C 01530019492582 — Nasser Kasadha &amp; Herman Beingana</span></div>
+            <div class="dash-row"><span class="dr-label">Airtel Money → DFCU</span><span class="dr-value">Dial *185*7*1#, select DFCU</span></div>
+            <div class="dash-row"><span class="dr-label">MTN Mobile Money → DFCU</span><span class="dr-value">Dial *165*6*1#, select DFCU</span></div>
+            <form id="invoice-form" style="margin-top:16px;">
+              <label>What are you paying for?</label>
+              <select name="payment_type" required>
+                <option>Membership Subscription</option>
+                <option>Membership Renewal</option>
+                <option>Donation</option>
+                <option>Event Fee</option>
+                <option>CPD Course Fee</option>
+                <option>Other</option>
+              </select>
+              <label>Details <span style="font-weight:400;color:var(--text-muted);">(e.g. event or course name)</span></label>
+              <input type="text" name="reference_note">
+              <label>Amount (UGX)</label>
+              <input type="number" name="amount" min="0" step="1" required>
+              <button class="btn btn-primary" type="submit">Generate Invoice</button>
+            </form>
+            <div id="invoice-output" style="margin-top:20px;"></div>
+          </div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>My Invoices</h3>
+          <div id="my-invoices-list"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>My Full Payment History</h3>
+          <div class="cpd-total" style="margin-bottom:12px;"><div class="num" id="payments-total" style="font-size:1.4rem;">—</div><div class="lbl">Total Paid to Date</div></div>
+          <div id="full-payments-list"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CPD ACADEMY -->
+    <div class="comms-panel" id="dashtab-cpd">
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>CPD Points</h3>
+          <div class="cpd-total">
+            <div class="num" id="cpd-points-total">0</div>
+            <div class="lbl">Points Earned</div>
+          </div>
+          <p id="cpd-target-note" class="dash-empty-note" style="text-align:center;"></p>
+          <div style="background:var(--bg-soft);border-radius:20px;height:10px;overflow:hidden;margin-top:10px;">
+            <div id="cpd-progress-bar" style="background:var(--green);height:100%;width:0%;border-radius:20px;transition:width 0.4s;"></div>
+          </div>
+          <p style="text-align:center;margin-top:14px;"><button class="btn btn-outline" id="print-transcript-btn" style="color:var(--deep-blue);border-color:var(--deep-blue);padding:8px 16px;font-size:0.85rem;">🖨️ Print My CPD Transcript</button></p>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>My Courses</h3>
+          <div id="cpd-enrollment-list"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>Claim External CPD Points</h3>
+          <button class="btn btn-primary" id="show-external-cpd-form-btn" style="margin-bottom:14px;">+ Claim External CPD</button>
+          <div id="external-cpd-form-wrap" style="display:none;">
+            <p style="color:var(--text-muted);font-size:0.86rem;margin-bottom:12px;">Attended a conference or training outside GMCOA-U? Submit it here for the Secretariat to review and add to your CPD total.</p>
+            <form id="external-cpd-form">
+              <label>Activity Title</label>
+              <input type="text" name="activity_title" required>
+              <label>Organized By</label>
+              <input type="text" name="provider">
+              <label>Activity Date</label>
+              <input type="date" name="activity_date">
+              <label>CPD Points Claimed</label>
+              <input type="number" name="cpd_points_claimed" min="1" required>
+              <label>Proof Document Link <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+              <input type="url" name="proof_document_link">
+              <button class="btn btn-primary" type="submit">Submit for Review</button>
+            </form>
+            <p id="external-cpd-status" style="margin-top:10px;font-size:0.86rem;"></p>
+          </div>
+          <div id="my-external-cpd-list" style="margin-top:14px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTS & RESEARCH -->
+    <div class="comms-panel" id="dashtab-activity">
+      <div class="dash-grid">
+        <div class="dash-card dash-full">
+          <h3>My Event Registrations</h3>
+          <div id="my-events-list"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+
+        <div class="dash-card dash-full">
+          <h3>My Research Projects</h3>
+          <div id="my-research-summary"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="comms-panel" id="dashtab-community">
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>My Committee Memberships</h3>
+          <div id="my-committees-list"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+
+        <div class="dash-card">
+          <h3>Election Eligibility</h3>
+          <div id="election-eligibility"><p class="dash-empty-note">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="member-nav.js"></script>
+<script src="push-helper.js"></script>
+<script src="email-helper.js"></script>
+<script src="dashboard.js?v=3"></script>
+
+<div id="diag-output" style="position:fixed;bottom:0;left:0;right:0;background:#000;color:#0f0;font-family:monospace;font-size:12px;padding:12px;max-height:50vh;overflow:auto;z-index:99999;white-space:pre-wrap;">Loading diagnostic...</div>
+<script>
+setTimeout(() => {
+  const out = document.getElementById("diag-output");
+  let report = "--- JS ERRORS ---\n";
+  report += (window.__jsErrors && window.__jsErrors.length) ? window.__jsErrors.join("\n") : "None detected\n";
+
+  report += "\n--- ELEMENT CHECK ---\n";
+  ["dash-menu-toggle","dash-tabs","show-announcements-btn","announcements-list","logout-btn"].forEach((id) => {
+    report += id + ": " + (document.getElementById(id) ? "FOUND" : "MISSING") + "\n";
+  });
+
+  report += "\n--- SESSION ---\n";
+  supabaseClient.auth.getSession().then(({data, error}) => {
+    report += "Session: " + (data.session ? "LOGGED IN as " + data.session.user.email : "NOT LOGGED IN") + "\n";
+    out.textContent = report;
+  });
+}, 2000);
+</script>
+</body>
+</html>
